@@ -15,8 +15,10 @@ dotenv.config();
 const app = express();
 
 const allowedOrigins = [
-    "http://localhost:3000",
-    "https://2-0-ochre.vercel.app"
+    "http://localhost:8081",
+    "https://2-0-ochre.vercel.app",
+    "http://172.29.96.1:8081",
+    "https://6922-14-139-177-158.ngrok-free.app/login"
 ];
 
 // Remove the duplicate cors() middleware
@@ -107,38 +109,6 @@ app.post('/verify-payment', async (req, res) => {
         return res.status(200).json({ success: false, message: "Invalid payment signature!" });
     }
 });
-
-// Webhook endpoint
-// app.post("/webhook", (req, res) => {
-//     const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
-
-//     const receivedSignature = req.headers["x-razorpay-signature"];
-//     const generatedSignature = crypto
-//         .createHmac("sha256", webhookSecret)
-//         .update(JSON.stringify(req.body))
-//         .digest("hex");
-
-//     if (receivedSignature === generatedSignature) {
-//         console.log("Webhook verified successfully!");
-
-//         const event = req.body.event;
-//         const payload = req.body.payload;
-
-//         if (event === "payment.captured") {
-//             const paymentId = payload.payment.entity.id;
-//             const orderId = payload.payment.entity.order_id;
-//             console.log("Payment captured:", paymentId);
-
-//             // Process order based on orderId or paymentId
-//             // Update your database, notify the user, etc.
-//         }
-
-//         res.status(200).json({ status: "success" });
-//     } else {
-//         console.error("Invalid webhook signature!");
-//         res.status(400).json({ error: "Invalid signature" });
-//     }
-// });
 const generateShiprocketToken = async () => {
     try {
         const response = await axios.post('https://apiv2.shiprocket.in/v1/external/auth/login', {

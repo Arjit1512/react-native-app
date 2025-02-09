@@ -8,7 +8,7 @@ export default function Layout() {
     <Tabs screenOptions={{ headerShown: false, tabBarStyle: styles.tab }}>
       {/* Home Tab */}
       <Tabs.Screen
-        name="index"
+        name="Home"
         options={{
           title: "Home",
           tabBarIcon: ({ size, color }) => <Entypo name="home" size={size} color={color} />,

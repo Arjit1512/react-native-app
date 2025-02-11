@@ -34,6 +34,9 @@ const ProductDetail = () => {
         alert("Item added to cart successfully!");
         setSelectedSize(null);
       }
+      else{
+        alert(data.message);
+      }
       console.log(data);
     } catch (error) {
       console.log(error);

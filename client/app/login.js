@@ -32,6 +32,7 @@ const login = () => {
         navigation.navigate("Home");
         await AsyncStorage.setItem('token',data.token);
         await AsyncStorage.setItem('userId',data.userID);
+        await AsyncStorage.setItem('userName',data.userName);
       } else {
         alert(data.message);
       }
@@ -79,7 +80,7 @@ const login = () => {
 
           <TouchableOpacity onPress={() => navigation.navigate("Register")}>
             <Text style={styles.registerText}>
-              No account? <Text style={{ fontWeight: "bold" }}>Register</Text>
+              No account? <Text style={{ fontWeight: "bold", textDecorationLine:"underline" }}>Register</Text>
             </Text>
           </TouchableOpacity>
         </View>
@@ -93,7 +94,7 @@ export default login
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "purple",
+    backgroundColor: "white",
     height: "100%",
     width: "100%",
     margin: 0,
@@ -152,7 +153,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   loginButton: {
-    backgroundColor: "purple",
+    backgroundColor: "white",
     paddingVertical: 12,
     paddingHorizontal: 0,
     borderRadius: 8,
@@ -160,13 +161,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   loginText: {
-    color: "white",
+    color: "black",
     fontSize: 16,
     fontWeight: "bold",
   },
   registerText: {
     marginTop: 15,
-    color: "#555",
+    color: "white",
     fontSize: 14,
   },
 })

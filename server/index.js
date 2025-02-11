@@ -329,7 +329,7 @@ app.post('/:userId/add-item/:productId', verifyToken, async (req, res) => {
             existingCartItem.product_quantity += 1;
             existingCartItem.totalBill = existingCartItem.product_price * existingCartItem.product_quantity;
             await existingCartItem.save();
-            return res.status(200).json({ message: "Quantity updated!" });
+            return res.status(200).json({message: "Quantity updated!" });
         }
 
         const newProduct = new Cart({
@@ -345,7 +345,7 @@ app.post('/:userId/add-item/:productId', verifyToken, async (req, res) => {
         await newProduct.save();
         user.cart.push(newProduct._id);
         await user.save();
-        return res.status(200).json({ message: "Item added to cart successfully!" });
+        return res.status(200).json({message: "Item added to cart successfully!" });
     }
     catch (error) {
         console.log('Error: ', error);

@@ -3,13 +3,11 @@ import { View, Text, Image, StyleSheet, ScrollView, StatusBar, useColorScheme, T
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useMyContext } from "../components/Context";
 
 const login = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { globalUserID, setGlobalUserID } = useMyContext();
   const navigation = useNavigation();
 
   const handleSubmit = async () => {
@@ -33,7 +31,7 @@ const login = () => {
       if (data.message === "Login successfull!") {
         navigation.navigate("Home");
         await AsyncStorage.setItem('token',data.token);
-        setGlobalUserID(data.userID);
+        await AsyncStorage.setItem('userId',data.userID);
       } else {
         alert(data.message);
       }

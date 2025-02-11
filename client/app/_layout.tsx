@@ -40,6 +40,8 @@ export default function Layout() {
           title: "Orders",
           tabBarIcon: ({ size, color }) => <MaterialIcons name="receipt" size={size} color={color} />,
         }}
+
+        
       />
     </Tabs>
   );

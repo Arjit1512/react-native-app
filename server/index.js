@@ -213,6 +213,10 @@ app.post('/register', async (req, res) => {
         if (!email || !userName || !password) {
             return res.status(200).json({ message: "Email, username, and password are required" });
         }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ message: "Invalid email format" });
+        }
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(200).json({ message: "User already exists!" });

@@ -53,6 +53,14 @@ const Orders = () => {
     )
   }
 
+    if (orders.length === 0) {
+      return (
+        <View style={{ position: "relative", top: "50%"}}>
+          <Text style={{ textAlign: "center", fontWeight:"500", fontSize: 16, fontFamily: "Inconsolata" }}>You haven't order any item yet!😔</Text>
+        </View>
+      )
+    }
+
   return (
     <ScrollView style={styles.container}>
       <View>
@@ -130,6 +138,7 @@ const styles = StyleSheet.create({
   },
   orderdiv: {
     padding: 15,
+    height:"75%",
     width: "100%",
     position: "relative",
     top: "5%",
@@ -177,7 +186,7 @@ const styles = StyleSheet.create({
     marginTop: 5
   },
   proimg: {
-    height: "45%",
+    height: "65%",
     width: "55%",
     objectFit: "cover",
     borderColor: "black",

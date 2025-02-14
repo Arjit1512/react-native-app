@@ -3,16 +3,19 @@ import { View, Text, Image, StyleSheet, ScrollView, StatusBar, useColorScheme, T
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
+import Loader from '../../components/Loader.js';
 
 const login = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
-    console.log('Button clicked: email: ', email);
-    console.log('password: ', password);
+    setLoading(true);
     try {
       const response = await fetch('https://2-0-server.vercel.app/login', {
         method: 'POST',
@@ -20,19 +23,19 @@ const login = () => {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
-          email: email, 
-          password : password
+        body: JSON.stringify({
+          email: email,
+          password: password
         }),
       });
 
       const data = await response.json(); // FIX: Properly parse JSON response
 
       if (data.message === "Login successfull!") {
-        navigation.navigate("Home");
-        await AsyncStorage.setItem('token',data.token);
-        await AsyncStorage.setItem('userId',data.userID);
-        await AsyncStorage.setItem('userName',data.userName);
+        router.push("/Home");
+        await AsyncStorage.setItem('token', data.token);
+        await AsyncStorage.setItem('userId', data.userID);
+        await AsyncStorage.setItem('userName', data.userName);
       } else {
         alert(data.message);
       }
@@ -43,8 +46,16 @@ const login = () => {
     } catch (error) {
       console.log('Error: ', error);
       alert('Error connecting to server');
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <Loader visible={loading} />
+    )
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -78,10 +89,12 @@ const login = () => {
             <Text style={styles.loginText}>Login</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-            <Text style={styles.registerText}>
-              No account? <Text style={{ fontWeight: "bold", textDecorationLine:"underline" }}>Register</Text>
-            </Text>
+          <TouchableOpacity activeOpacity={0.7} style={styles.registerButton} onPress={() => { console.log("Navigating to Register..."); router.push('/(stack)/Register'); }}>
+            <View>
+              <Text style={styles.registerText}>
+                No account? <Text style={{ fontWeight: "bold", textDecorationLine: "underline" }}>Register</Text>
+              </Text>
+            </View>
           </TouchableOpacity>
         </View>
       </View>
@@ -127,7 +140,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     width: "90%",
-    height: "100%",
+    minHeight: 500,
     alignSelf: "center",
     elevation: 5,
     position: "relative",
@@ -165,9 +178,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
+  registerButton: {
+    padding: 10,
+    marginTop: 5,
+    minWidth: 150,
+    alignItems: 'center'
+  },
   registerText: {
     marginTop: 15,
     color: "white",
     fontSize: 14,
-  },
+  }
 })

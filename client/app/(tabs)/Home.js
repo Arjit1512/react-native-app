@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Button } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import SplashScreen from "../components/SplashScreen";
+import SplashScreen from "../../components/SplashScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
+
 const Home = () => {
   const [showSplash, setShowSplash] = useState(true);
   const navigation = useNavigation();
-  
+  const router = useRouter();
   const testimonials = [
-    { image: require("../assets/sources/athlete.jpg") },
-    { image: require("../assets/sources/pic1.png") },
+    { image: require("../../assets/sources/athlete.jpg") },
+    { image: require("../../assets/sources/pic1.png") },
   ];
   const [index, setIndex] = useState(0);
+  
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -58,7 +62,7 @@ const Home = () => {
         <TouchableOpacity
           onPress={() => {
             console.log("Navigating to Products...");
-            navigation.navigate("Products"); // Ensure "Products" exists in Stack.Navigator
+            router.push('/Products');
           }}
         >
           <View style={styles.card}>
@@ -68,7 +72,7 @@ const Home = () => {
 
         {/* Testimonial Section */}
         <View style={styles.typist}>
-          <Image source={require("../assets/sources/ts.jpg")} style={{ width: 160, height: 160 }} />
+          <Image source={require("../../assets/sources/ts.jpg")} style={{ width: 160, height: 160 }} />
           <Text style={styles.typewriter}>
             " We sincerely promise that our exclusive t-shirt designs, crafted with the finest fabrics and the latest trends, will not only match your style but also leave you absolutely impressed with their comfort and uniqueness. Experience the perfect blend of fashion and quality like never before! "
           </Text>

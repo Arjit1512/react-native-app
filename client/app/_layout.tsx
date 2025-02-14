@@ -1,55 +1,23 @@
-import React from "react";
-import { Entypo, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
-import { StyleSheet } from "react-native";
+import { Stack } from 'expo-router';
 
-export default function Layout() {
+export default function RootLayout() {
   return (
-    <Tabs screenOptions={{ headerShown: false, tabBarStyle: styles.tab }}>
-      {/* Home Tab */}
-      <Tabs.Screen
-        name="Home"
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen 
+        name="(stack)/ProductDetail" 
         options={{
-          title: "Home",
-          tabBarIcon: ({ size, color }) => <Entypo name="home" size={size} color={color} />,
+          headerShown: false,
+          title: "Product Detail"
         }}
       />
-
-      {/* Login Tab */}
-      <Tabs.Screen
-        name="login"
+      <Stack.Screen 
+        name="(stack)/Register" 
         options={{
-          title: "Login",
-          tabBarIcon: ({ size, color }) => <MaterialIcons name="login" size={size} color={color} />,
+          headerShown: false,
+          title: "Register"
         }}
       />
-
-      {/* Cart Tab */}
-      <Tabs.Screen
-        name="cart"
-        options={{
-          title: "Cart",
-          tabBarIcon: ({ size, color }) => <FontAwesome5 name="shopping-cart" size={size} color={color} />,
-        }}
-      />
-
-      {/* Orders Tab */}
-      <Tabs.Screen
-        name="orders"
-        options={{
-          title: "Orders",
-          tabBarIcon: ({ size, color }) => <MaterialIcons name="receipt" size={size} color={color} />,
-        }}
-
-        
-      />
-    </Tabs>
+    </Stack>
   );
 }
-
-
-const styles=StyleSheet.create({
-  tab:{
-    backgroundColor:"black"
-  }
-})

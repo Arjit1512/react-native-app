@@ -1,19 +1,38 @@
-import { View, Text, Button, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, Button, Image, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { ScrollView } from "react-native";
 import { Icon } from "react-native-elements";
 import RNPickerSelect from "react-native-picker-select";
 import { useState } from "react";
-import Loader from "../components/Loader";
+import Loader from "../../components/Loader";
+import { useLocalSearchParams, useRouter } from "expo-router";
 
 const ProductDetail = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const product = route.params?.product;
+  //const product = route.params?.product;
+  const windowWidth = Dimensions.get("window").width;
+  const router = useRouter();
+  const params = useLocalSearchParams();
+
   const [selectedSize, setSelectedSize] = useState(null);
   const [flagArray, setFlagArray] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const product = {
+    id: parseInt(params.id),
+    name: params.name,
+    price: parseFloat(params.price),
+    imgURL: JSON.parse(params.imgURL), // Parse back to require() object
+    altURL: JSON.parse(params.altURL),
+    description: params.description
+  };
+
+  console.log("Received params:", params);
+  console.log("Constructed product:", product);
+
+
 
   const handleAddCart = async (id, size) => {
     setLoading(true);
@@ -34,7 +53,7 @@ const ProductDetail = () => {
         alert("Item added to cart successfully!");
         setSelectedSize(null);
       }
-      else{
+      else {
         alert(data.message);
       }
       console.log(data);
@@ -65,10 +84,40 @@ const ProductDetail = () => {
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.imageScroll}>
-          <Image source={product.imgURL} resizeMode="cover" style={styles.cloth} />
-          <Image source={product.altURL} resizeMode="cover" style={styles.cloth} />
+        <ScrollView
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onScroll={(event) => {
+            const contentOffsetX = event.nativeEvent.contentOffset.x;
+            const index = Math.round(contentOffsetX / windowWidth);
+            setCurrentIndex(index);
+          }}
+          scrollEventThrottle={16}
+          style={styles.imageScroll}
+        >
+          <Image
+            source={product.imgURL}
+            resizeMode="cover"
+            style={[styles.cloth, { width: windowWidth }]}
+          />
+          <Image
+            source={product.altURL}
+            resizeMode="cover"
+            style={[styles.cloth, { width: windowWidth }]}
+          />
         </ScrollView>
+        <View style={styles.pagination}>
+          {[product.imgURL, product.altURL].map((_, index) => (
+            <View
+              key={index}
+              style={[
+                styles.dot,
+                { backgroundColor: currentIndex === index ? "black" : "gray" }
+              ]}
+            />
+          ))}
+        </View>
         <View style={styles.slide}>
           <Text style={styles.title}>{product.name}</Text>
           <Text style={styles.ots}>OVERSIZED T-SHIRT</Text>
@@ -119,7 +168,7 @@ const ProductDetail = () => {
 
           <Text style={styles.h1}>Product Detail: </Text>
           <Text style={styles.description}>Experience ultimate comfort and style with our premium True Hood T-shirt. Crafted from 100% soft, breathable cotton.
-            Details: Product is of 240GSM (Oversized) with a 9 x 12 inch design on it.</Text>
+            {"\n"}Details: Product is of 240GSM (Oversized) with a 9 x 12 inch design on it.</Text>
         </View>
 
         {/* Table */}
@@ -169,7 +218,7 @@ const ProductDetail = () => {
         </View>
 
 
-        <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate("Products")}>
+        <TouchableOpacity style={styles.btn} onPress={() => router.back()}>
           <Icon name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
       </View>
@@ -191,12 +240,28 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: "Inconsolata",
     fontSize: 22,
-    width: "50%"
+    width: "40%",
+    marginTop:20,
   },
   price: {
     fontSize: 20,
     color: "",
     marginBottom: 10,
+  },
+  /*scrolling-of-img*/
+  imageScroll: {
+    height: 250,
+  },
+  pagination: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: -5,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginHorizontal: 5,
   },
   h1: {
     fontSize: 16,
@@ -208,7 +273,7 @@ const styles = StyleSheet.create({
     fontFamily: "Inconsolata",
     fontSize: 16,
     lineHeight: 16,
-    width: "90%",
+    width: "98%",
     fontWeight: "300",
     position: "relative",
     top: "2%"
@@ -229,7 +294,7 @@ const styles = StyleSheet.create({
     height: 330,
     padding: 4,
     marginTop: 40,
-    marginHorizontal: 10, // Add spacing between images
+    marginHorizontal: 0, // Add spacing between images
   },
   ots: {
     color: "grey",

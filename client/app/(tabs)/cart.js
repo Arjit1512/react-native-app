@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
-import Loader from '../components/Loader.js';
+import Loader from '../../components/Loader.js';
 
 
 const Cart = () => {
@@ -96,7 +96,7 @@ const Cart = () => {
   if (items.length === 0) {
     return (
       <View style={{ position: "relative", top: "50%" }}>
-        <Text style={{ textAlign: "center", fontSize: 18, fontFamily: "Inconsolata" }}>Oops, there are no items in your cart!😔</Text>
+        <Text style={{ textAlign: "center", fontSize: 16, fontWeight:"500", fontFamily: "Inconsolata" }}>Oops, there are no items in your cart!😔</Text>
       </View>
     )
   }

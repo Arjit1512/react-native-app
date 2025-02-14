@@ -12,7 +12,7 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.arjit.client", 
+      "package": "com.arjit.client",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -33,7 +33,13 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      "expo-font"
+    ],
+    "fonts": [
+      {
+        "asset": "assets/fonts/Inconsolata-Regular.ttf"
+      }
     ],
     "experiments": {
       "typedRoutes": true

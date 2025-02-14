@@ -6,12 +6,22 @@
       "@/*": [
         "./*"
       ]
-    }
+    },
+    "allowJs": true,
+    "checkJs": false,
+    "typeRoots": [
+      "./src/types",
+      "./node_modules/@types"
+    ]
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
-, "app/(tabs)/Home.js", "app/(tabs)/Home.js"  ]
+    "expo-env.d.ts",
+    "app/(tabs)/Home.js",
+    "src/types/**/*.d.ts"
+  ]
 }

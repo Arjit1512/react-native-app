@@ -35,6 +35,7 @@ const Register = () => {
 
             if (data.message === "Registration successfull!") {
                 router.push("/Home");
+                await AsyncStorage.setItem('email', email);
                 await AsyncStorage.setItem('token', data.token);
                 await AsyncStorage.setItem('userId', data.userID);
                 await AsyncStorage.setItem('userName', data.userName);

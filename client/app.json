@@ -34,7 +34,8 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-font"
+      "expo-font",
+      "expo-razorpay"
     ],
     "fonts": {
       "Inconsolata-Regular": "./assets/fonts/Inconsolata_400Regular.ttf",
@@ -43,6 +44,10 @@
     },
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "typeRoots": [
+      "../node_modules/@types",
+      "../@types"
+    ]
   }
 }

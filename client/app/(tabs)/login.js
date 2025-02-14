@@ -36,6 +36,7 @@ const login = () => {
         await AsyncStorage.setItem('token', data.token);
         await AsyncStorage.setItem('userId', data.userID);
         await AsyncStorage.setItem('userName', data.userName);
+        await AsyncStorage.setItem('email', email);
         setEmail('');
         setPassword('');
         alert(data.message);  

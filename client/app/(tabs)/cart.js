@@ -1,11 +1,12 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Alert } from 'react-native'
+import React, { useEffect, useState, useCallback } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { BlurView } from 'expo-blur';
 import Loader from '../../components/Loader.js';
+import RazorpayCheckout from 'react-native-razorpay';
 
 
 const Cart = () => {
@@ -20,6 +21,65 @@ const Cart = () => {
     state: "",
     pincode: ""
   })
+
+  const initializePayment = async (amount) => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const email = await AsyncStorage.getItem('email');
+      const userName = await AsyncStorage.getItem('userName');
+
+      // First, create order on your backend
+      const orderResponse = await fetch(`https://2-0-server.vercel.app/create-order`, {
+        method: 'POST',
+        body: JSON.stringify({
+          amount: amount * 100 // Convert to paise
+        })
+      });
+
+      const orderData = await orderResponse.json();
+
+      // Configure Razorpay options
+      const options = {
+        description: 'Payment for your order',
+        image: 'https://sociopedia-bucket.s3.us-east-1.amazonaws.com/images/real-logo-hstar.png',
+        currency: 'INR',
+        key: process.env.REACT_APP_RAZORPAY_KEY_ID, // Replace with your key
+        amount: amount * 100,
+        name: 'True Hood',
+        order_id: `receipt${orderData.id}-${Date.now()}`,
+        prefill: {
+          email: email,
+          contact: '',
+          name: userName
+        },
+        theme: { color: '#000000' }
+      };
+
+      // Open Razorpay
+      const data = await RazorpayCheckout.open(options);
+
+      // Payment successful
+      const paymentResponse = await fetch(`https://2-0-server.vercel.app/verify-payment`, {
+        method: 'POST',
+        body: JSON.stringify({
+          razorpay_payment_id: data.razorpay_payment_id,
+          razorpay_order_id: data.razorpay_order_id,
+          razorpay_signature: data.razorpay_signature
+        })
+      });
+
+      const paymentData = await paymentResponse.json();
+
+      if (paymentData.success) {
+        Alert.alert('Success', 'Payment successful!');
+        // Clear cart or navigate to success screen
+      }
+
+    } catch (error) {
+      console.log('Payment Error:', error);
+      Alert.alert('Error', 'Payment failed. Please try again.');
+    }
+  };
 
   const addQuantity = async (userID, productID, size) => {
     setLoading(true);
@@ -90,6 +150,7 @@ const Cart = () => {
       if (data.message === "Address added successfully!") {
         showAddressPopup(false);
         setAddress({ street: '', city: '', state: '', pincode: '' });
+        await initializePayment(totalBill);
       }
       alert(data.message);
     } catch (error) {
@@ -206,7 +267,7 @@ const Cart = () => {
 
                 <TextInput
                   style={styles.input}
-                  placeholder="Enter your complete address"
+                  placeholder="Enter your complete address*"
                   placeholderTextColor="grey"
                   value={address.street}
                   onChangeText={(text) => setAddress({ ...address, street: text })}
@@ -215,7 +276,7 @@ const Cart = () => {
 
                 <TextInput
                   style={styles.input}
-                  placeholder="Enter your city"
+                  placeholder="city*"
                   placeholderTextColor="grey"
                   value={address.city}
                   onChangeText={(text) => setAddress({ ...address, city: text })}
@@ -224,7 +285,7 @@ const Cart = () => {
 
                 <TextInput
                   style={styles.input}
-                  placeholder="Enter your state"
+                  placeholder="state*"
                   placeholderTextColor="grey"
                   value={address.state}
                   onChangeText={(text) => setAddress({ ...address, state: text })}
@@ -233,7 +294,7 @@ const Cart = () => {
 
                 <TextInput
                   style={styles.input}
-                  placeholder="Enter your pincode"
+                  placeholder="pincode*"
                   placeholderTextColor="grey"
                   value={address.pincode}
                   onChangeText={(text) => setAddress({ ...address, pincode: text })}
@@ -412,7 +473,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
     zIndex: 1000,
-    height:690
+    height: 690
   },
   popup: {
     width: '90%',
@@ -441,6 +502,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
     color: 'black',
+    fontFamily: 'Inconsolata-Bold'
   },
   input: {
     width: '100%',
@@ -452,6 +514,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#e0e0e0',
     color: 'black',
+    fontFamily: 'Inconsolata'
   },
   submitButton: {
     backgroundColor: 'black',

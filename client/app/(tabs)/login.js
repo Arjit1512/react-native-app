@@ -29,18 +29,25 @@ const login = () => {
         }),
       });
 
-      const data = await response.json(); // FIX: Properly parse JSON response
+      const data = await response.json(); 
 
       if (data.message === "Login successfull!") {
         router.push("/Home");
         await AsyncStorage.setItem('token', data.token);
         await AsyncStorage.setItem('userId', data.userID);
         await AsyncStorage.setItem('userName', data.userName);
-      } else {
+        setEmail('');
+        setPassword('');
+        alert(data.message);  
+      } else if(data.message==="User does not exists!" || data.message==="Incorrect password!") {
+        setPassword('');
         alert(data.message);
       }
-      setEmail('');
-      setPassword('');
+      else {
+        alert(data.message);
+        setEmail('');
+        setPassword('');  
+      }
       console.log('Userid: ===', data.userID);
       console.log(data);
     } catch (error) {
@@ -148,7 +155,7 @@ const styles = StyleSheet.create({
     gap: 20
   },
   title: {
-    fontFamily: "Inconsolata",
+    fontFamily: "Inconsolata-Bold",
     fontSize: 20,
     lineHeight: 12,
     padding: 20,
@@ -164,6 +171,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 10,
     marginBottom: 12,
+    fontFamily: "Inconsolata",
   },
   loginButton: {
     backgroundColor: "white",

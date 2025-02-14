@@ -94,6 +94,10 @@ const styles = StyleSheet.create({
     width: 350,
     objectFit: "cover",
   },
+  productName:{
+    fontFamily:"inconsolata-Bold",
+    fontSize: 17,
+  },
   ots: {
     color: "grey",
     fontSize: 8.6,
@@ -101,7 +105,6 @@ const styles = StyleSheet.create({
     letterSpacing: 2.9,
     lineHeight: 22,
     textTransform: "uppercase",
-    paddingTop: 30,
   },
 });
 

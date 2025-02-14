@@ -4,6 +4,8 @@ import { useNavigation } from "@react-navigation/native";
 import SplashScreen from "../../components/SplashScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
+import { useFonts } from 'expo-font';
+import Loader from '../../components/Loader.js';
 
 const Home = () => {
   const [showSplash, setShowSplash] = useState(true);
@@ -14,7 +16,12 @@ const Home = () => {
     { image: require("../../assets/sources/pic1.png") },
   ];
   const [index, setIndex] = useState(0);
-  
+  let [fontsLoaded] = useFonts({
+    "Inconsolata": require("../../assets/fonts/Inconsolata_400Regular.ttf"),
+    "Inconsolata-Bold": require("../../assets/fonts/Inconsolata_700Bold.ttf"),
+    "SpaceMono-Regular": require("../../assets/fonts/SpaceMono-Regular.ttf"),
+  });
+
 
 
   useEffect(() => {
@@ -45,7 +52,7 @@ const Home = () => {
     };
     checkFirstLaunch();
   }, []);
-  
+
 
   if (showSplash) {
     return <SplashScreen />;
@@ -132,11 +139,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   typewriter: {
-    fontFamily:"Inconsolata",
+    fontFamily: "Inconsolata",
     fontSize: 9,
     lineHeight: 12,
-    width:"50%",
-    marginTop:30
+    width: "50%",
+    marginTop: 30
   },
 });
 

@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
+import { Icon } from "react-native-elements";
 import Loader from '../../components/Loader.js';
 
 const Register = () => {
@@ -54,9 +55,9 @@ const Register = () => {
 
     if (loading) {
         return (
-          <Loader visible={loading} />
+            <Loader visible={loading} />
         )
-      }
+    }
 
     return (
         <ScrollView style={styles.container}>
@@ -107,6 +108,11 @@ const Register = () => {
                         </View>
                     </TouchableOpacity>
                 </View>
+
+                <TouchableOpacity style={styles.btn} onPress={() => router.back()}>
+                    <Icon name="arrow-back" size={24} color="white" />
+                </TouchableOpacity>
+
             </View>
         </ScrollView>
 
@@ -158,7 +164,7 @@ const styles = StyleSheet.create({
         gap: 20
     },
     title: {
-        fontFamily: "Inconsolata",
+        fontFamily: "Inconsolata-Bold",
         fontSize: 20,
         lineHeight: 12,
         padding: 20,
@@ -174,6 +180,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         paddingHorizontal: 10,
         marginBottom: 12,
+        fontFamily: "Inconsolata",
     },
     loginButton: {
         backgroundColor: "white",
@@ -200,6 +207,20 @@ const styles = StyleSheet.create({
         marginTop: 15,
         color: "white",
         fontSize: 14,
-    }
+    },
+
+    btn: {
+        position: "relative",
+        bottom: "89%",
+        left:"6%",
+        height:"6%",
+        width:"10%",
+        backgroundColor: "black",
+        zIndex: 1000,
+        padding: 6,
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: "white",
+    },
 
 })

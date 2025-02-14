@@ -36,11 +36,11 @@
       ],
       "expo-font"
     ],
-    "fonts": [
-      {
-        "asset": "assets/fonts/Inconsolata-Regular.ttf"
-      }
-    ],
+    "fonts": {
+      "Inconsolata-Regular": "./assets/fonts/Inconsolata_400Regular.ttf",
+      "Inconsolata-Bold": "./assets/fonts/Inconsolata_700Bold.ttf",
+      "SpaceMono-Regular": "./assets/fonts/SpaceMono-Regular.ttf"
+    },
     "experiments": {
       "typedRoutes": true
     }

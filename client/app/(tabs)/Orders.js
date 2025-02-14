@@ -7,7 +7,7 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [userID, setUserID] = useState(null);
   const [userName, setUserName] = useState('');
-  const navigation = useNavigation();
+  const [flag,setFlag] = useState(0);
 
   useEffect(() => {
     const getOrders = async () => {
@@ -18,11 +18,7 @@ const Orders = () => {
         setUserID(userId);
         setUserName(username);
 
-        console.log('SKJFASBFHBFSJ: ', userID);
-        console.log('UNGA NAME : ', userName);
-
-
-        console.log('TOKEN----> ', token);
+        console.log('TOKEN cheppave----> ', token);
         const response = await fetch(`https://2-0-server.vercel.app/${userID}/get-cart`, {
           headers: {
             Authorization: `Bearer ${token}`
@@ -34,6 +30,7 @@ const Orders = () => {
           //setuserId(null);
         }
         setOrders(data.orders || []);
+        if(!data.orders)setFlag(1);
         console.log('ORDERS====> ', data);
       } catch (error) {
         console.log('Error: ', error);
@@ -53,13 +50,13 @@ const Orders = () => {
     )
   }
 
-    if (orders.length === 0) {
-      return (
-        <View style={{ position: "relative", top: "50%"}}>
-          <Text style={{ textAlign: "center", fontWeight:"500", fontSize: 16, fontFamily: "Inconsolata" }}>You haven't order any item yet!😔</Text>
-        </View>
-      )
-    }
+  if (!flag && orders.length === 0) {
+    return (
+      <View style={{ position: "relative", top: "50%" }}>
+        <Text style={{ textAlign: "center", fontWeight: "500", fontSize: 16, fontFamily: "Inconsolata" }}>You haven't order any item yet!😔</Text>
+      </View>
+    )
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -133,12 +130,12 @@ const styles = StyleSheet.create({
     fontWeight: "700"
   },
   /*order-section*/
-  eachorderdiv:{
-    marginTop:15
+  eachorderdiv: {
+    marginTop: 15
   },
   orderdiv: {
     padding: 15,
-    height:"75%",
+    height: "75%",
     width: "100%",
     position: "relative",
     top: "5%",

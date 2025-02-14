@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
+import { BlurView } from 'expo-blur';
 import Loader from '../../components/Loader.js';
 
 
@@ -12,6 +13,13 @@ const Cart = () => {
   const [items, setItems] = useState([]);
   const [flagArray, setFlagArray] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [addressPopup, showAddressPopup] = useState(false);
+  const [address, setAddress] = useState({
+    street: "",
+    city: "",
+    state: "",
+    pincode: ""
+  })
 
   const addQuantity = async (userID, productID, size) => {
     setLoading(true);
@@ -61,6 +69,35 @@ const Cart = () => {
     }
   }
 
+  const handleAddressSubmit = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      const token = await AsyncStorage.getItem('token');
+      const response = await fetch(`https://2-0-server.vercel.app/${userId}/add-address`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          street: address.street,
+          city: address.city,
+          state: address.state,
+          pincode: address.pincode
+        })
+      })
+      const data = await response.json();
+      if (data.message === "Address added successfully!") {
+        showAddressPopup(false);
+        setAddress({ street: '', city: '', state: '', pincode: '' });
+      }
+      alert(data.message);
+    } catch (error) {
+      console.log('Error: ', error);
+      alert(error);
+    }
+  }
+
   useFocusEffect(
     React.useCallback(() => {
       const getCart = async () => {
@@ -96,7 +133,7 @@ const Cart = () => {
   if (items.length === 0) {
     return (
       <View style={{ position: "relative", top: "50%" }}>
-        <Text style={{ textAlign: "center", fontSize: 16, fontWeight:"500", fontFamily: "Inconsolata" }}>Oops, there are no items in your cart!😔</Text>
+        <Text style={{ textAlign: "center", fontSize: 16, fontWeight: "500", fontFamily: "Inconsolata" }}>Oops, there are no items in your cart!😔</Text>
       </View>
     )
   }
@@ -141,18 +178,77 @@ const Cart = () => {
           <View style={styles.box}>
             <Text style={styles.summary}>ORDER SUMMARY</Text>
             <View style={styles.samerow}>
-            <Text style={styles.gray}>SUB TOTAL:</Text><Text style={styles.bill}>₹{totalBill}.00</Text>
+              <Text style={styles.gray}>SUB TOTAL:</Text><Text style={styles.bill}>₹{totalBill}.00</Text>
             </View>
             <View style={styles.samerow}>
-            <Text style={styles.gray}>DELIVERY CHARGES:</Text><Text style={styles.bill}>FREE</Text>
+              <Text style={styles.gray}>DELIVERY CHARGES:</Text><Text style={styles.bill}>FREE</Text>
             </View>
             <View style={styles.samerow}>
-            <Text style={styles.gray}>TOTAL:</Text><Text style={styles.bill}>₹{totalBill}.00</Text>
+              <Text style={styles.gray}>TOTAL:</Text><Text style={styles.bill}>₹{totalBill}.00</Text>
             </View>
-            <TouchableOpacity style={styles.addToCartBtn}>
+            <TouchableOpacity style={styles.addToCartBtn} onPress={() => showAddressPopup(true)}>
               <Text style={styles.addToCartText}>CHECKOUT</Text>
             </TouchableOpacity>
           </View>
+
+          {addressPopup && (
+            <View style={styles.popupContainer}>
+              <BlurView intensity={20} style={StyleSheet.absoluteFill} />
+              <View style={styles.popup}>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => showAddressPopup(false)}
+                >
+                  <Ionicons name="close" size={24} color="black" />
+                </TouchableOpacity>
+
+                <Text style={styles.popupTitle}>Add Delivery Address</Text>
+
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter your complete address"
+                  placeholderTextColor="grey"
+                  value={address.street}
+                  onChangeText={(text) => setAddress({ ...address, street: text })}
+                  keyboardType="default"
+                />
+
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter your city"
+                  placeholderTextColor="grey"
+                  value={address.city}
+                  onChangeText={(text) => setAddress({ ...address, city: text })}
+                  keyboardType="default"
+                />
+
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter your state"
+                  placeholderTextColor="grey"
+                  value={address.state}
+                  onChangeText={(text) => setAddress({ ...address, state: text })}
+                  keyboardType="default"
+                />
+
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter your pincode"
+                  placeholderTextColor="grey"
+                  value={address.pincode}
+                  onChangeText={(text) => setAddress({ ...address, pincode: text })}
+                  keyboardType="numeric"
+                />
+
+                <TouchableOpacity
+                  style={styles.submitButton}
+                  onPress={handleAddressSubmit}
+                >
+                  <Text style={styles.submitButtonText}>SUBMIT ADDRESS</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
         </ScrollView>
       </View>
     </GestureHandlerRootView>
@@ -251,7 +347,7 @@ const styles = StyleSheet.create({
     borderColor: "black",
     borderWidth: 2,
     padding: 15,
-    paddingTop:5,
+    paddingTop: 5,
     paddingBottom: 10,
     width: "90%",
     display: "flex",
@@ -260,10 +356,10 @@ const styles = StyleSheet.create({
     alignItems: "left",
     textAlign: "left"
   },
-  samerow:{
+  samerow: {
     display: "flex",
-    flexDirection:"row",
-    gap:10
+    flexDirection: "row",
+    gap: 10
   },
   summary: {
     textAlign: "center",
@@ -277,7 +373,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   bill: {
-    fontWeight:"600",
+    fontWeight: "600",
     marginTop: 5,
     fontSize: 20,
   },
@@ -304,5 +400,74 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textTransform: "uppercase",
     letterSpacing: 1.2,
+  },
+  /*address-popup*/
+  popupContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    zIndex: 1000,
+    height:690
+  },
+  popup: {
+    width: '90%',
+    backgroundColor: 'white',
+    borderRadius: 15,
+    padding: 20,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  closeButton: {
+    position: 'absolute',
+    right: 10,
+    top: 10,
+    padding: 10,
+    zIndex: 1,
+  },
+  popupTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 20,
+    textAlign: 'center',
+    color: 'black',
+  },
+  input: {
+    width: '100%',
+    height: 45,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    color: 'black',
+  },
+  submitButton: {
+    backgroundColor: 'black',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+    width: '100%',
+  },
+  submitButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
   },
 })

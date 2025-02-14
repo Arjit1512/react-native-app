@@ -24,13 +24,10 @@ const ProductDetail = () => {
     id: parseInt(params.id),
     name: params.name,
     price: parseFloat(params.price),
-    imgURL: JSON.parse(params.imgURL), // Parse back to require() object
+    imgURL: JSON.parse(params.imgURL),
     altURL: JSON.parse(params.altURL),
     description: params.description
   };
-
-  console.log("Received params:", params);
-  console.log("Constructed product:", product);
 
 
 
@@ -238,7 +235,7 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   title: {
-    fontFamily: "Inconsolata",
+    fontFamily: "Inconsolata-Bold",
     fontSize: 22,
     width: "40%",
     marginTop:20,
@@ -276,7 +273,8 @@ const styles = StyleSheet.create({
     width: "98%",
     fontWeight: "300",
     position: "relative",
-    top: "2%"
+    top: "2%",
+    color:"grey"
   },
   slide: {
     textAlign: "left",

@@ -18,7 +18,8 @@ const allowedOrigins = [
     "http://localhost:8081",
     "https://2-0-ochre.vercel.app",
     "http://172.29.96.1:8081",
-    "https://6922-14-139-177-158.ngrok-free.app/login"
+    "https://6922-14-139-177-158.ngrok-free.app/login",
+    "http://localhost:8081/Home"
 ];
 
 // Remove the duplicate cors() middleware

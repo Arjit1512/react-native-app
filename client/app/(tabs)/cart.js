@@ -1,20 +1,24 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Alert } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Alert, Platform } from 'react-native'
 import React, { useEffect, useState, useCallback } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { BlurView } from 'expo-blur';
 import Loader from '../../components/Loader.js';
-import RazorpayCheckout from 'react-native-razorpay';
-
+import { WebView } from 'react-native-webview';
+import RazorpayCheckout from '../../components/RazorpayCheckout';
+import axios from 'axios';
 
 const Cart = () => {
   const [userID, setUserID] = useState(null);
   const [items, setItems] = useState([]);
   const [flagArray, setFlagArray] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
   const [addressPopup, showAddressPopup] = useState(false);
+  const navigation = useNavigation();
+
   const [address, setAddress] = useState({
     street: "",
     city: "",
@@ -22,62 +26,77 @@ const Cart = () => {
     pincode: ""
   })
 
-  const initializePayment = async (amount) => {
+  const [orderProcessing, setOrderProcessing] = useState(false);
+  const generateShiprocketToken = async () => {
     try {
-      const token = await AsyncStorage.getItem('token');
-      const email = await AsyncStorage.getItem('email');
-      const userName = await AsyncStorage.getItem('userName');
-
-      // First, create order on your backend
-      const orderResponse = await fetch(`https://2-0-server.vercel.app/create-order`, {
-        method: 'POST',
-        body: JSON.stringify({
-          amount: amount * 100 // Convert to paise
-        })
+      const response = await axios.post('https://apiv2.shiprocket.in/v1/external/auth/login', {
+        email: "hemanth.a21@iiits.in",
+        password: "Hemanth#2003"
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
 
-      const orderData = await orderResponse.json();
-
-      // Configure Razorpay options
-      const options = {
-        description: 'Payment for your order',
-        image: 'https://sociopedia-bucket.s3.us-east-1.amazonaws.com/images/real-logo-hstar.png',
-        currency: 'INR',
-        key: process.env.REACT_APP_RAZORPAY_KEY_ID, // Replace with your key
-        amount: amount * 100,
-        name: 'True Hood',
-        order_id: `receipt${orderData.id}-${Date.now()}`,
-        prefill: {
-          email: email,
-          contact: '',
-          name: userName
-        },
-        theme: { color: '#000000' }
-      };
-
-      // Open Razorpay
-      const data = await RazorpayCheckout.open(options);
-
-      // Payment successful
-      const paymentResponse = await fetch(`https://2-0-server.vercel.app/verify-payment`, {
-        method: 'POST',
-        body: JSON.stringify({
-          razorpay_payment_id: data.razorpay_payment_id,
-          razorpay_order_id: data.razorpay_order_id,
-          razorpay_signature: data.razorpay_signature
-        })
-      });
-
-      const paymentData = await paymentResponse.json();
-
-      if (paymentData.success) {
-        Alert.alert('Success', 'Payment successful!');
-        // Clear cart or navigate to success screen
+      if (!response.data.token) {
+        throw new Error('Failed to generate Shiprocket token');
       }
 
+      return response.data.token;
     } catch (error) {
-      console.log('Payment Error:', error);
-      Alert.alert('Error', 'Payment failed. Please try again.');
+      console.error('Shiprocket Token Generation Error:', error.response ? error.response.data : error.message);
+      throw new Error('Failed to generate Shiprocket authentication token');
+    }
+  };
+  const createShiprocketOrder = async (orderDetails) => {
+    try {
+      const shiprocketToken = await generateShiprocketToken();
+
+      const response = await fetch('https://2-0-server.vercel.app/api/shiprocket/create-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${shiprocketToken}`,
+        },
+        body: JSON.stringify({
+          order_id: orderDetails.orderId,
+          order_date: new Date().toISOString().split('T')[0],
+          pickup_location: "Primary",
+          billing_customer_name: orderDetails.customerName,
+          billing_last_name: "",
+          billing_address: address.street,
+          billing_city: address.city,
+          billing_state: address.state,
+          billing_country: "India",
+          billing_pincode: address.pincode,
+          billing_email: orderDetails.email,
+          billing_phone: orderDetails.phone,
+          shipping_is_billing: true,
+          order_items: items.map(item => ({
+            name: item.product.name,
+            sku: item.product._id,
+            units: item.quantity,
+            selling_price: item.product.price,
+            size: item.size
+          })),
+          payment_method: "Prepaid",
+          sub_total: items.reduce((acc, item) => acc + (item.product.price * item.quantity), 0),
+          length: 10,
+          breadth: 10,
+          height: 10,
+          weight: 0.5
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create shipping order');
+      }
+
+      const shipmentData = await response.json();
+      return shipmentData;
+    } catch (error) {
+      console.error('Shiprocket Order Creation Error:', error);
+      throw error;
     }
   };
 
@@ -149,19 +168,88 @@ const Cart = () => {
       const data = await response.json();
       if (data.message === "Address added successfully!") {
         showAddressPopup(false);
-        setAddress({ street: '', city: '', state: '', pincode: '' });
-        await initializePayment(totalBill);
+        setShowPayment(true);
       }
-      alert(data.message);
+      else alert(data.message);
     } catch (error) {
       console.log('Error: ', error);
       alert(error);
     }
   }
 
+  const handleCheckout = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const userId = await AsyncStorage.getItem('userId');
+
+      const response = await fetch(`https://2-0-server.vercel.app/${userId}/checkout`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log('Checkout successful:', data);
+        return data;
+      } else {
+        throw new Error(data.message || 'Checkout failed');
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      throw error;
+    }
+  };
+
+  const handlePaymentSuccess = async (paymentData) => {
+    try {
+      setLoading(true);
+      setOrderProcessing(true);
+      const userName = await AsyncStorage.getItem('userName');
+      const email = await AsyncStorage.getItem('email');
+      // Process the checkout after successful payment
+      const checkoutResult = await handleCheckout();
+      const orderDetails = {
+        orderId: `shiprocket_${new Date()}_${email}`,
+        customerName: userName,
+        email: email,
+        phone: '9618825172'
+      };
+
+      const shipmentResult = await createShiprocketOrder(orderDetails);
+
+      if (shipmentResult) {
+        Alert.alert('Success', 'Order placed and shipping arranged successfully!');
+        setShowPayment(false);
+        setItems([]);
+        setFlagArray([]);
+        setAddress({ street: '', city: '', state: '', pincode: '' });
+
+        navigation.navigate('Orders');
+      }
+    } catch (error) {
+      console.error('Error processing order:', error);
+      Alert.alert('Error', 'Failed to process your order. Please try again.');
+    } finally {
+      setLoading(false);
+      setOrderProcessing(false);
+    }
+  };
+
+  const handlePaymentFailure = (error) => {
+    Alert.alert('Payment Failed', error);
+    setShowPayment(false);
+  };
+
+
+
   useFocusEffect(
     React.useCallback(() => {
       const getCart = async () => {
+        setLoading(true);
         try {
           const token = await AsyncStorage.getItem('token');
           const userId = await AsyncStorage.getItem('userId');
@@ -178,6 +266,8 @@ const Cart = () => {
           setItems(data.items);
         } catch (error) {
           console.log('Error: ', error);
+        } finally {
+          setLoading(false);
         }
       };
 
@@ -311,6 +401,16 @@ const Cart = () => {
             </View>
           )}
         </ScrollView>
+
+        {showPayment && (
+          <View style={StyleSheet.absoluteFill}>
+            <RazorpayCheckout
+              totalBill={totalBill}
+              onSuccess={handlePaymentSuccess}
+              onFailure={handlePaymentFailure}
+            />
+          </View>
+        )}
       </View>
     </GestureHandlerRootView>
   )
@@ -514,7 +614,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#e0e0e0',
     color: 'black',
-    fontFamily: 'Inconsolata'
+    fontFamily: 'Inconsolata',
   },
   submitButton: {
     backgroundColor: 'black',

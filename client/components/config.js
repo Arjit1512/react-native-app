@@ -1,0 +1,1 @@
+export const RAZORPAY_KEY_ID = 'rzp_live_FcIOkYg4nN3737'

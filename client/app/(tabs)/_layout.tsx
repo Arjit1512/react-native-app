@@ -18,7 +18,13 @@ export default function TabsLayout() {
           tabBarIcon: ({ size, color }) => <Entypo name="home" size={size} color={color} />,
         }}
       />
-
+      <Tabs.Screen
+        name="login"
+        options={{
+          title: "Login",
+          tabBarIcon: ({ size, color }) => <MaterialIcons name="login" size={size} color={color} />,
+        }}
+      />
       <Tabs.Screen
         name="Products"
         options={{
@@ -27,13 +33,7 @@ export default function TabsLayout() {
         }}
       />
 
-      <Tabs.Screen
-        name="login"
-        options={{
-          title: "Login",
-          tabBarIcon: ({ size, color }) => <MaterialIcons name="login" size={size} color={color} />,
-        }}
-      />
+
 
       <Tabs.Screen
         name="cart"

@@ -51,6 +51,51 @@ const Cart = () => {
   const createShiprocketOrder = async (orderDetails) => {
     try {
       const shiprocketToken = await generateShiprocketToken();
+      const totalQuantity = items.reduce((acc, item) => acc + (item.product_quantity || 0), 0);
+
+
+      const requestBody = {
+        order_id: `order_${Date.now()}`,
+        order_date: new Date().toISOString(),
+        pickup_location: "warehouse",
+        comment: "Customer Order",
+        billing_customer_name: orderDetails?.customerName || "Not Provided",
+        billing_last_name: "",
+        billing_address: address?.street || "Not Provided",
+        billing_city: address?.city || "Not Provided",
+        billing_pincode: Number(address?.pincode) || 111111,
+        billing_state: address?.state || "Not Provided",
+        billing_country: "India",
+        billing_email: orderDetails?.email || "Not Provided",
+        billing_phone: "9618825172",
+        shipping_is_billing: true,
+        shipping_customer_name: orderDetails?.customerName || "Not Provided",
+        shipping_address: address?.street || "Not Provided",
+        shipping_city: address?.city || "Not Provided",
+        shipping_pincode: Number(address?.pincode) || 111111,
+        shipping_country: "India",
+        shipping_state: address?.state || "Not Provided",
+        shipping_email: orderDetails?.email || "Not Provided",
+        shipping_phone: "9618825172",
+        order_items: items?.map(item => ({
+          name: `${item?.product_name || "Default Item Name"} - Size: ${item?.size || "Default Size"}`,
+          sku: `SKU${item?.product_id ? item.product_id.toString() : "DefaultSKU"}-${item?.size || "DefaultSize"}`,
+          units: item?.product_quantity || 1,
+          selling_price: Number(item?.totalBill) || 0,
+          discount: 0,
+          tax: 0,
+          hsn: 61091000,
+        })) || [],
+        payment_method: "Prepaid",
+        sub_total: items?.reduce((acc, item) => acc + (item?.totalBill || 0), 0),
+        length: 30,
+        breadth: 25,
+        height: 2 + (totalQuantity - 1) * 1.5,
+        weight: (totalQuantity || 0) * 0.25,
+      };
+
+
+      console.log('Shiprocket Request Body:', JSON.stringify(requestBody, null, 2));
 
       const response = await fetch('https://2-0-server.vercel.app/api/shiprocket/create-order', {
         method: 'POST',
@@ -58,44 +103,26 @@ const Cart = () => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${shiprocketToken}`,
         },
-        body: JSON.stringify({
-          order_id: orderDetails.orderId,
-          order_date: new Date().toISOString().split('T')[0],
-          pickup_location: "Primary",
-          billing_customer_name: orderDetails.customerName,
-          billing_last_name: "",
-          billing_address: address.street,
-          billing_city: address.city,
-          billing_state: address.state,
-          billing_country: "India",
-          billing_pincode: address.pincode,
-          billing_email: orderDetails.email,
-          billing_phone: orderDetails.phone,
-          shipping_is_billing: true,
-          order_items: items.map(item => ({
-            name: item.product.name,
-            sku: item.product._id,
-            units: item.quantity,
-            selling_price: item.product.price,
-            size: item.size
-          })),
-          payment_method: "Prepaid",
-          sub_total: items.reduce((acc, item) => acc + (item.product.price * item.quantity), 0),
-          length: 10,
-          breadth: 10,
-          height: 10,
-          weight: 0.5
-        }),
+        body: JSON.stringify(requestBody),
       });
 
+      // Log the response for debugging
+      const responseText = await response.text();
+      console.log('Shiprocket Response:', response.status, responseText);
+
       if (!response.ok) {
-        throw new Error('Failed to create shipping order');
+        throw new Error(`Failed to create shipping order: ${responseText}`);
       }
 
-      const shipmentData = await response.json();
+      const shipmentData = JSON.parse(responseText);
       return shipmentData;
     } catch (error) {
       console.error('Shiprocket Order Creation Error:', error);
+      // Log the full error details
+      if (error.response) {
+        console.error('Error Response:', error.response.data);
+        console.error('Error Status:', error.response.status);
+      }
       throw error;
     }
   };
@@ -210,20 +237,24 @@ const Cart = () => {
       setOrderProcessing(true);
       const userName = await AsyncStorage.getItem('userName');
       const email = await AsyncStorage.getItem('email');
-      // Process the checkout after successful payment
-      const checkoutResult = await handleCheckout();
+
+      // Use the Razorpay order ID from payment data
       const orderDetails = {
-        orderId: `shiprocket_${new Date()}_${email}`,
+        orderId: paymentData.razorpay_order_id, // Use the actual order ID from Razorpay
         customerName: userName,
         email: email,
         phone: '9618825172'
       };
 
+      // Create shipping order first
       const shipmentResult = await createShiprocketOrder(orderDetails);
 
       if (shipmentResult) {
+        // Then process the checkout
+        const checkoutResult = await handleCheckout();
+
         Alert.alert('Success', 'Order placed and shipping arranged successfully!');
-        setShowPayment(false);
+
         setItems([]);
         setFlagArray([]);
         setAddress({ street: '', city: '', state: '', pincode: '' });
@@ -236,6 +267,7 @@ const Cart = () => {
     } finally {
       setLoading(false);
       setOrderProcessing(false);
+      setShowPayment(false);
     }
   };
 

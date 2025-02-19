@@ -3,12 +3,18 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import moment from 'moment-timezone';
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [userID, setUserID] = useState(null);
   const [userName, setUserName] = useState('');
 
+  // More explicit conversion to IST
+  const formatDateToIST = (utcDateString) => {
+    return moment(utcDateString).tz('Asia/Kolkata').format('D MMM YYYY, h:mm A');
+  };
+  
   useFocusEffect(
     React.useCallback(() => {
       const getOrders = async () => {
@@ -30,8 +36,10 @@ const Orders = () => {
           if (data.message === "No token provided") {
             //setuserId(null);
           }
-          setOrders(data.orders || []);
-          console.log('ORDERS====> ', data);
+          // Sort by date (newest first)
+          const sortedOrders = [...data.orders].sort((a, b) => new Date(b.date) - new Date(a.date));
+          setOrders(sortedOrders || []);
+          console.log('ORDERS====> ', sortedOrders);
         } catch (error) {
           console.log('Error: ', error);
         }
@@ -69,7 +77,9 @@ const Orders = () => {
           {orders?.map((order) => {
             return (
               <View key={order._id} style={[styles.flexcol, { height: order.length * 100 }]}>
-                <Text style={styles.date}>Ordered at {order.date}</Text>
+                <Text style={styles.date}>
+                  Ordered at {formatDateToIST(order.date)}
+                </Text>
                 <Text style={styles.bill}>TOTAL AMOUNT PAID: ₹{order.totalBill}.00</Text>
                 {order?.items?.map((item) => {
                   return (

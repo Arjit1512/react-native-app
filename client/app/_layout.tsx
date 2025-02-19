@@ -18,6 +18,20 @@ export default function RootLayout() {
           title: "Register"
         }}
       />
+      <Stack.Screen 
+        name="(stack)/Orders" 
+        options={{
+          headerShown: false,
+          title: "Orders"
+        }}
+      />
+      <Stack.Screen 
+        name="(stack)/CustomerCare" 
+        options={{
+          headerShown: false,
+          title: "CustomerCare"
+        }}
+      />
     </Stack>
   );
 }

@@ -44,10 +44,10 @@ export default function TabsLayout() {
       />
 
       <Tabs.Screen
-        name="Orders"
+        name="Profile"
         options={{
-          title: "Orders",
-          tabBarIcon: ({ size, color }) => <FontAwesome5 name="receipt" size={size} color={color} />,
+          title: "Profile",
+          tabBarIcon: ({ size, color }) => <FontAwesome5 name="user" size={size} color={color} />,
         }}
       />
     </Tabs>

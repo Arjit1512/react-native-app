@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Image, StyleSheet, ScrollView, StatusBar, useColorScheme, TextInput, TouchableOpacity, } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import Loader from '../../components/Loader.js';
@@ -13,6 +13,40 @@ const login = () => {
   const navigation = useNavigation();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [lg, setlg] = useState(false);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const load = async () => {
+        try {
+          const token = await AsyncStorage.getItem('token');
+          if (token) {
+            setlg(true);
+          } else {
+            setlg(false);
+          }
+        }
+        catch (error) {
+          console.log('Error while logging in!', error);
+          alert(error)
+        }
+      }
+      load();
+    })
+  );
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.multiRemove(['token', 'userId', 'userName', 'email']);
+      setlg(false);
+      alert('Successfully logged out!');
+      router.push("/Home");
+    } catch (error) {
+      console.log('Error during logout:', error);
+      Alert.alert("Error", "Failed to logout. Please try again.");
+    }
+  };
+
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -29,25 +63,26 @@ const login = () => {
         }),
       });
 
-      const data = await response.json(); 
+      const data = await response.json();
 
       if (data.message === "Login successfull!") {
-        router.push("/Home");
         await AsyncStorage.setItem('token', data.token);
         await AsyncStorage.setItem('userId', data.userID);
         await AsyncStorage.setItem('userName', data.userName);
         await AsyncStorage.setItem('email', email);
+        setlg(true);
         setEmail('');
         setPassword('');
-        alert(data.message);  
-      } else if(data.message==="User does not exists!" || data.message==="Incorrect password!") {
+        router.push("/Home");
+        alert(data.message);
+      } else if (data.message === "User does not exists!" || data.message === "Incorrect password!") {
         setPassword('');
         alert(data.message);
       }
       else {
         alert(data.message);
         setEmail('');
-        setPassword('');  
+        setPassword('');
       }
       console.log('Userid: ===', data.userID);
       console.log(data);
@@ -62,6 +97,28 @@ const login = () => {
   if (loading) {
     return (
       <Loader visible={loading} />
+    )
+  }
+
+  if (lg) {
+    return (
+      <View style={styles.emptyContainer}>
+        <Text style={styles.emptyText}>Do you want to logout?</Text>
+        <View style={{ display: "flex", flexDirection: "row", gap: 20 }}>
+          <TouchableOpacity
+            style={styles.submitButton}
+            onPress={handleLogout}
+          >
+            <Text style={styles.submitButtonText}>Yes</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.submitButton}
+            onPress={() => router.back()}
+          >
+            <Text style={styles.submitButtonText}>No</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     )
   }
 
@@ -119,6 +176,34 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     margin: 0,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    textAlign: "center",
+    fontWeight: "500",
+    fontSize: 20,
+    fontFamily: "Inconsolata"
+  },
+  submitButton: {
+    backgroundColor: 'black',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+    width: '20%',
+  },
+  submitButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
   },
   navbar: {
     alignItems: "center",

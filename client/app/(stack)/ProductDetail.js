@@ -50,6 +50,10 @@ const ProductDetail = () => {
         alert("Item added to cart successfully!");
         setSelectedSize(null);
       }
+      else if(data.message==="Invalid token"){
+        router.push("/login");
+        alert("Please login first to add items in your cart!");
+      }
       else {
         alert(data.message);
       }

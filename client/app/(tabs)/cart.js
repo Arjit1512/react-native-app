@@ -259,7 +259,7 @@ const Cart = () => {
         setFlagArray([]);
         setAddress({ street: '', city: '', state: '', pincode: '' });
 
-        navigation.navigate('Orders');
+        navigation.navigate('/(stack)/Orders');
       }
     } catch (error) {
       console.error('Error processing order:', error);
@@ -313,7 +313,7 @@ const Cart = () => {
     )
   }
 
-  if (items.length === 0) {
+  if (!items || items.length === 0) {
     return (
       <View style={{ position: "relative", top: "50%" }}>
         <Text style={{ textAlign: "center", fontSize: 16, fontWeight: "500", fontFamily: "Inconsolata" }}>Oops, there are no items in your cart!😔</Text>

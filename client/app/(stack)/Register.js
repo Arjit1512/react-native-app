@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Image, StyleSheet, ScrollView, StatusBar, useColorScheme, TextInput, TouchableOpacity, } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect  } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { Icon } from "react-native-elements";
@@ -14,6 +14,39 @@ const Register = () => {
     const navigation = useNavigation();
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const [lg, setlg] = useState(false);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            const load = async () => {
+                try {
+                    const token = await AsyncStorage.getItem('token');
+                    if (token) {
+                        setlg(true);
+                    } else {
+                        setlg(false);
+                    }
+                }
+                catch (error) {
+                    console.log('Error while logging in!', error);
+                    alert(error)
+                }
+            }
+            load();
+        })
+    );
+
+    const handleLogout = async () => {
+        try {
+            await AsyncStorage.multiRemove(['token', 'userId', 'userName', 'email']);
+            setlg(false);
+            alert('Successfully logged out!');
+            router.push("/Home");
+        } catch (error) {
+            console.log('Error during logout:', error);
+            Alert.alert("Error", "Failed to logout. Please try again.");
+        }
+    };
 
     const handleSubmit = async () => {
         setLoading(true);
@@ -34,12 +67,15 @@ const Register = () => {
             const data = await response.json(); // FIX: Properly parse JSON response
 
             if (data.message === "Registration successfull!") {
-                router.push("/Home");
                 await AsyncStorage.setItem('email', email);
                 await AsyncStorage.setItem('token', data.token);
                 await AsyncStorage.setItem('userId', data.userID);
                 await AsyncStorage.setItem('userName', data.userName);
-            } else {
+                setlg(true);
+                router.push("/Home");
+                alert(data.message);
+            }
+            else {
                 alert(data.message);
             }
             setEmail('');
@@ -57,6 +93,28 @@ const Register = () => {
     if (loading) {
         return (
             <Loader visible={loading} />
+        )
+    }
+
+    if (lg) {
+        return (
+            <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>Do you want to logout?</Text>
+                <View style={{ display: "flex", flexDirection: "row", gap: 20 }}>
+                    <TouchableOpacity
+                        style={styles.submitButton}
+                        onPress={handleLogout}
+                    >
+                        <Text style={styles.submitButtonText}>Yes</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.submitButton}
+                        onPress={() => router.back()}
+                    >
+                        <Text style={styles.submitButtonText}>No</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
         )
     }
 
@@ -213,9 +271,9 @@ const styles = StyleSheet.create({
     btn: {
         position: "relative",
         bottom: "89%",
-        left:"6%",
-        height:"6%",
-        width:"10%",
+        left: "6%",
+        height: "6%",
+        width: "10%",
         backgroundColor: "black",
         zIndex: 1000,
         padding: 6,

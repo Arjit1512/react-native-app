@@ -1,20 +1,23 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from "react-native";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { useNavigation, useFocusEffect} from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import moment from 'moment-timezone';
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { Icon } from "react-native-elements";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [userID, setUserID] = useState(null);
   const [userName, setUserName] = useState('');
-
+  const router = useRouter();
+  
   // More explicit conversion to IST
   const formatDateToIST = (utcDateString) => {
     return moment(utcDateString).tz('Asia/Kolkata').format('D MMM YYYY, h:mm A');
   };
-  
+
   useFocusEffect(
     React.useCallback(() => {
       const getOrders = async () => {
@@ -102,6 +105,10 @@ const Orders = () => {
         <View style={styles.black}>
           <Text style={styles.white}>While we deliver your product, please take a look at our brand new collections!</Text>
         </View>
+
+        <TouchableOpacity style={styles.btn} onPress={() => router.back()}>
+          <Icon name="arrow-back" size={24} color="white" />
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -153,7 +160,7 @@ const styles = StyleSheet.create({
   orderdiv: {
     padding: 10,
     width: "100%",
-
+    marginTop:30
   },
   eachorderdiv: {
     marginTop: 25
@@ -211,7 +218,19 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     textTransform: "uppercase",
     textAlign: "center",
-  }
+  },
+  btn: {
+    position: "relative",
+    bottom: "82%",
+    right: "-3%",
+    backgroundColor: "black",
+    zIndex: 100,
+    padding: 6,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "black",
+    width:"10%",
+  },
 });
 
 export default Orders;

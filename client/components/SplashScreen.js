@@ -17,8 +17,8 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
   },
   gif: {
-    width: 200,
-    height: 200,
+    width: 300,
+    height: 300,
     resizeMode: "contain",
   },
 });

@@ -32,27 +32,21 @@ const Home = () => {
     return () => clearInterval(interval);
   }, []);
 
+
   useEffect(() => {
-    const checkFirstLaunch = async () => {
-      try {
-        const alreadyLaunched = await AsyncStorage.getItem("hasLaunched");
-        if (alreadyLaunched === null) {
-          // First launch detected
-          await AsyncStorage.setItem("hasLaunched", "true");
-          setShowSplash(true);
-          setTimeout(() => setShowSplash(false), 3000);
-        } else {
-          // Not first launch, hide splash immediately
-          setShowSplash(false);
-        }
-      } catch (error) {
-        console.error("Error checking first launch:", error);
-        setShowSplash(false); // Prevent infinite splash if there's an error
-      }
-    };
     checkFirstLaunch();
   }, []);
 
+  const checkFirstLaunch = async () => {
+    try {
+      setTimeout(() => {
+        setShowSplash(false);
+      }, 2000);
+    } catch (error) {
+      console.error("Error checking first launch:", error);
+      setShowSplash(false);
+    }
+  };
 
   if (showSplash) {
     return <SplashScreen />;
@@ -65,7 +59,6 @@ const Home = () => {
           <Text style={styles.navbarText}>WE THE INDEPENDENT</Text>
         </View>
 
-        {/* Touchable for Products */}
         <TouchableOpacity
           onPress={() => {
             console.log("Navigating to Products...");
@@ -83,6 +76,13 @@ const Home = () => {
           <Text style={styles.typewriter}>
             " We sincerely promise that our exclusive t-shirt designs, crafted with the finest fabrics and the latest trends, will not only match your style but also leave you absolutely impressed with their comfort and uniqueness. Experience the perfect blend of fashion and quality like never before! "
           </Text>
+        </View>
+
+        <View style={{ marginTop: 20 }}>
+          <Image source={require("../../assets/sources/hof.jpg")} style={{ width: "100%", height: 300}} />
+          {/* <Text style={[styles.typewriter,{backgroundColor:"black",color:"white",position:"relative",bottom:"45%",left:"25%",lineHeight:20,fontSize:14,textAlign:"center"}]}>
+            Currently we dont have a content to paste here!
+          </Text> */}
         </View>
       </View>
     </ScrollView>

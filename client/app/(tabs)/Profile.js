@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } fr
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import { Icon } from "react-native-elements";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation,useFocusEffect } from '@react-navigation/native';
 import { router } from 'expo-router';
 
 const AccountScreen = () => {
@@ -14,13 +14,18 @@ const AccountScreen = () => {
   });
   const navigation = useNavigation();
 
-  useEffect(() => {
+  useFocusEffect(
+      React.useCallback(() => {
     // Fetch user info from AsyncStorage
     const getUserInfo = async () => {
       try {
         const name = await AsyncStorage.getItem('userName') || '';
         const email = await AsyncStorage.getItem('email') || '';
         const phone = await AsyncStorage.getItem('userPhone') || '';
+        // if(!email){
+        //   alert('Please login to view your profile!')
+        //   return
+        // }
         
         setUserInfo({ name, email, phone });
       } catch (error) {
@@ -29,7 +34,8 @@ const AccountScreen = () => {
     };
     
     getUserInfo();
-  }, []);
+  }, [])
+);
 
   const MenuOption = ({ title, subtitle, onPress, last }) => (
     <TouchableOpacity 

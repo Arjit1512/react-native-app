@@ -39,7 +39,7 @@ const login = () => {
     try {
       await AsyncStorage.multiRemove(['token', 'userId', 'userName', 'email']);
       setlg(false);
-      alert('Successfully logged out!');
+      alert('Logged out successfully!');
       router.push("/Home");
     } catch (error) {
       console.log('Error during logout:', error);
@@ -102,21 +102,23 @@ const login = () => {
 
   if (lg) {
     return (
-      <View style={styles.emptyContainer}>
-        <Text style={styles.emptyText}>Do you want to logout?</Text>
-        <View style={{ display: "flex", flexDirection: "row", gap: 20 }}>
-          <TouchableOpacity
-            style={styles.submitButton}
-            onPress={handleLogout}
-          >
-            <Text style={styles.submitButtonText}>Yes</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.submitButton}
-            onPress={() => router.back()}
-          >
-            <Text style={styles.submitButtonText}>No</Text>
-          </TouchableOpacity>
+      <View style={styles.center} >
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>Do you want to logout?</Text>
+          <View style={{ display: "flex", flexDirection: "row", gap: 20 }}>
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={handleLogout}
+            >
+              <Text style={styles.submitButtonText}>Yes</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={() => router.back()}
+            >
+              <Text style={styles.submitButtonText}>No</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     )
@@ -177,14 +179,28 @@ const styles = StyleSheet.create({
     width: "100%",
     margin: 0,
   },
+  //logout section
+  center: {
+    display: "flex",
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   emptyContainer: {
-    flex: 1,
+    backgroundColor: "#333",
+    width: "80%",
+    height: 400,
+    position: "relative",
+    top: 180,
+    zIndex: 100,
+    borderRadius: 8,
+    color: "#000",
     justifyContent: 'center',
     alignItems: 'center',
   },
   emptyText: {
     textAlign: "center",
     fontWeight: "500",
+    color: "white",
     fontSize: 20,
     fontFamily: "Inconsolata"
   },
@@ -196,7 +212,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 20,
-    width: '20%',
+    width: '30%',
   },
   submitButtonText: {
     color: 'white',

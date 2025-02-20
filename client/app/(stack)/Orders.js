@@ -17,7 +17,7 @@ const Orders = () => {
   const formatDateToIST = (utcDateString) => {
     return moment(utcDateString).tz('Asia/Kolkata').format('D MMM YYYY, h:mm A');
   };
-
+  
   useFocusEffect(
     React.useCallback(() => {
       const getOrders = async () => {
@@ -25,6 +25,8 @@ const Orders = () => {
           const token = await AsyncStorage.getItem('token');
           const userId = await AsyncStorage.getItem('userId');
           const username = await AsyncStorage.getItem('userName');
+          
+          
           setUserID(userId);
           setUserName(username);
 
@@ -56,8 +58,8 @@ const Orders = () => {
 
   if (!userID) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.text}>Please login to display your orders!</Text>
+      <View style={styles.emptyContainer}>
+        <Text style={styles.emptyText}>Please login to display your orders!</Text>
       </View>
     )
   }

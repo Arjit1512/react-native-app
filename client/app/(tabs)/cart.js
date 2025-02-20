@@ -277,7 +277,6 @@ const Cart = () => {
   };
 
 
-
   useFocusEffect(
     React.useCallback(() => {
       const getCart = async () => {
@@ -310,6 +309,14 @@ const Cart = () => {
   if (loading) {
     return (
       <Loader visible={loading} />
+    )
+  }
+
+  if (!userID) {
+    return (
+      <View style={styles.emptyContainer}>
+        <Text style={styles.emptyText}>Please login to display your cart!</Text>
+      </View>
     )
   }
 
@@ -374,65 +381,65 @@ const Cart = () => {
             </TouchableOpacity>
           </View>
 
-          {addressPopup && (
-            <View style={styles.popupContainer}>
-              <BlurView intensity={20} style={StyleSheet.absoluteFill} />
-              <View style={styles.popup}>
-                <TouchableOpacity
-                  style={styles.closeButton}
-                  onPress={() => showAddressPopup(false)}
-                >
-                  <Ionicons name="close" size={24} color="black" />
-                </TouchableOpacity>
-
-                <Text style={styles.popupTitle}>Add Delivery Address</Text>
-
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter your complete address*"
-                  placeholderTextColor="grey"
-                  value={address.street}
-                  onChangeText={(text) => setAddress({ ...address, street: text })}
-                  keyboardType="default"
-                />
-
-                <TextInput
-                  style={styles.input}
-                  placeholder="city*"
-                  placeholderTextColor="grey"
-                  value={address.city}
-                  onChangeText={(text) => setAddress({ ...address, city: text })}
-                  keyboardType="default"
-                />
-
-                <TextInput
-                  style={styles.input}
-                  placeholder="state*"
-                  placeholderTextColor="grey"
-                  value={address.state}
-                  onChangeText={(text) => setAddress({ ...address, state: text })}
-                  keyboardType="default"
-                />
-
-                <TextInput
-                  style={styles.input}
-                  placeholder="pincode*"
-                  placeholderTextColor="grey"
-                  value={address.pincode}
-                  onChangeText={(text) => setAddress({ ...address, pincode: text })}
-                  keyboardType="numeric"
-                />
-
-                <TouchableOpacity
-                  style={styles.submitButton}
-                  onPress={handleAddressSubmit}
-                >
-                  <Text style={styles.submitButtonText}>SUBMIT ADDRESS</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          )}
         </ScrollView>
+        {addressPopup && (
+          <View style={styles.popupContainer}>
+            <BlurView intensity={20} style={StyleSheet.absoluteFill} />
+            <View style={styles.popup}>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => showAddressPopup(false)}
+              >
+                <Ionicons name="close" size={24} color="black" />
+              </TouchableOpacity>
+
+              <Text style={styles.popupTitle}>Add Delivery Address</Text>
+
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your complete address*"
+                placeholderTextColor="grey"
+                value={address.street}
+                onChangeText={(text) => setAddress({ ...address, street: text })}
+                keyboardType="default"
+              />
+
+              <TextInput
+                style={styles.input}
+                placeholder="city*"
+                placeholderTextColor="grey"
+                value={address.city}
+                onChangeText={(text) => setAddress({ ...address, city: text })}
+                keyboardType="default"
+              />
+
+              <TextInput
+                style={styles.input}
+                placeholder="state*"
+                placeholderTextColor="grey"
+                value={address.state}
+                onChangeText={(text) => setAddress({ ...address, state: text })}
+                keyboardType="default"
+              />
+
+              <TextInput
+                style={styles.input}
+                placeholder="pincode*"
+                placeholderTextColor="grey"
+                value={address.pincode}
+                onChangeText={(text) => setAddress({ ...address, pincode: text })}
+                keyboardType="numeric"
+              />
+
+              <TouchableOpacity
+                style={styles.submitButton}
+                onPress={handleAddressSubmit}
+              >
+                <Text style={styles.submitButtonText}>SUBMIT ADDRESS</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
 
         {showPayment && (
           <View style={StyleSheet.absoluteFill}>
@@ -467,6 +474,17 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     paddingTop: 50,
     textAlign: "center",
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    textAlign: "center",
+    fontWeight: "500",
+    fontSize: 16,
+    fontFamily: "Inconsolata"
   },
   textsize: {
     fontWeight: "400"
@@ -597,7 +615,7 @@ const styles = StyleSheet.create({
   /*address-popup*/
   popupContainer: {
     position: 'absolute',
-    top: 0,
+    top: 80,
     left: 0,
     right: 0,
     bottom: 0,

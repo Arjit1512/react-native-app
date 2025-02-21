@@ -80,8 +80,6 @@ const Register = () => {
             }
             setEmail('');
             setPassword('');
-            console.log('Userid: ===', data.userID);
-            console.log(data);
         } catch (error) {
             console.log('Error: ', error);
             alert('Error connecting to server');

@@ -95,8 +95,6 @@ const Cart = () => {
       };
 
 
-      console.log('Shiprocket Request Body:', JSON.stringify(requestBody, null, 2));
-
       const response = await fetch('https://2-0-server.vercel.app/api/shiprocket/create-order', {
         method: 'POST',
         headers: {
@@ -108,7 +106,7 @@ const Cart = () => {
 
       // Log the response for debugging
       const responseText = await response.text();
-      console.log('Shiprocket Response:', response.status, responseText);
+      //console.log('Shiprocket Response:', response.status, responseText);
 
       if (!response.ok) {
         throw new Error(`Failed to create shipping order: ${responseText}`);
@@ -141,7 +139,6 @@ const Cart = () => {
         body: JSON.stringify({ size: size })
       })
       const data = await response.json();
-      console.log(data);
       setFlagArray([...flagArray, 1]);
     } catch (error) {
       console.log('Error: ', error);
@@ -165,7 +162,6 @@ const Cart = () => {
         body: JSON.stringify({ size: size })
       })
       const data = await response.json();
-      console.log(data);
       setFlagArray([...flagArray, 1]);
     } catch (error) {
       console.log('Error: ', error);
@@ -220,7 +216,6 @@ const Cart = () => {
       const data = await response.json();
 
       if (response.ok) {
-        console.log('Checkout successful:', data);
         return data;
       } else {
         throw new Error(data.message || 'Checkout failed');
@@ -293,7 +288,6 @@ const Cart = () => {
           });
 
           const data = await response.json();
-          console.log('Cart items = ', data);
           setItems(data.items);
         } catch (error) {
           console.log('Error: ', error);
@@ -514,8 +508,8 @@ const styles = StyleSheet.create({
     paddingTop: 3
   },
   proimg: {
-    height: "100%",
     width: "40%",
+    height: Platform.OS === 'ios' ? "100%" : "90%", 
     objectFit: "cover",
     marginTop: 15
   },

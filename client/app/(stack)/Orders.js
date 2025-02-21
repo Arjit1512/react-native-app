@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Platform } from "react-native";
 import { useNavigation, useFocusEffect} from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import moment from 'moment-timezone';
@@ -30,7 +30,6 @@ const Orders = () => {
           setUserID(userId);
           setUserName(username);
 
-          console.log('TOKEN cheppave----> ', token);
           const response = await fetch(`https://2-0-server.vercel.app/${userID}/get-cart`, {
             headers: {
               Authorization: `Bearer ${token}`
@@ -44,7 +43,6 @@ const Orders = () => {
           // Sort by date (newest first)
           const sortedOrders = [...data.orders].sort((a, b) => new Date(b.date) - new Date(a.date));
           setOrders(sortedOrders || []);
-          console.log('ORDERS====> ', sortedOrders);
         } catch (error) {
           console.log('Error: ', error);
         }
@@ -54,7 +52,7 @@ const Orders = () => {
     }, [userID, setOrders])
   );
 
-  console.log('22222222: ', userID);
+  //console.log('22222222: ', userID);
 
   if (!userID) {
     return (
@@ -140,19 +138,19 @@ const styles = StyleSheet.create({
   },
   navbar: {
     backgroundColor: "#000",
-    height: 80,
+    height: Platform.OS === 'ios' ? 80 : 60,
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
   },
   navbarText: {
     color: "#fff",
-    fontSize: 9,
+    fontSize: Platform.OS === 'ios' ? 9 : 7,
     fontWeight: "400",
     letterSpacing: 2.9,
     lineHeight: 22,
     textTransform: "uppercase",
-    paddingTop: 30,
+    paddingTop: Platform.OS === 'ios' ? 20 : 0,
     textAlign: "center",
   },
   blink: {
@@ -222,9 +220,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   btn: {
-    position: "relative",
-    bottom: "82%",
-    right: "-3%",
+    position: "absolute",
+    bottom: Platform.OS === 'ios' ? '81%' : '96%',
+    right: "86%",
     backgroundColor: "black",
     zIndex: 100,
     padding: 6,

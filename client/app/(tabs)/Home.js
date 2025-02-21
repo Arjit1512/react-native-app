@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Button } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Button, Platform } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import SplashScreen from "../../components/SplashScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#000",
     flexDirection: "row",
-    height: 80,
+    height: Platform.OS === 'ios' ? 80 : 60,
     justifyContent: "center",
     position: "relative",
     top: 0,
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     letterSpacing: 2.9,
     lineHeight: 22,
     textTransform: "uppercase",
-    paddingTop: 30,
+    paddingTop: Platform.OS === 'ios' ? 20 : 0,
     textAlign: "center",
   },
   card: {
@@ -133,10 +133,11 @@ const styles = StyleSheet.create({
   },
   typist: {
     position: "relative",
-    top: 20,
+    top: Platform.OS === 'ios' ? 10 : 0,
     width: "100%",
     zIndex: 1,
     flexDirection: "row",
+    backgroundColor:"white"
   },
   typewriter: {
     fontFamily: "Inconsolata",

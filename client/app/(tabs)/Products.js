@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, StatusBar, useColorScheme } from "react-native";
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, StatusBar, useColorScheme, Platform } from "react-native";
 import Clothes from "../../constants/clothes";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -11,7 +11,6 @@ const Products = () => {
 
   const handlePress = (item) => {
     try {
-      console.log("Navigating with item:", item);
       // Pass individual properties instead of the whole object
       router.push({
         pathname: "/(stack)/ProductDetail",
@@ -64,7 +63,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#000",
     flexDirection: "row",
-    height: 80,
+    height: Platform.OS === 'ios' ? 80 : 60,
     justifyContent: "center",
     position: "relative",
     top: 0,
@@ -78,7 +77,7 @@ const styles = StyleSheet.create({
     letterSpacing: 2.9,
     lineHeight: 22,
     textTransform: "uppercase",
-    paddingTop: 20,
+    paddingTop: Platform.OS === 'ios' ? 20 : 0,
     textAlign: "center",
   },
   closet: {

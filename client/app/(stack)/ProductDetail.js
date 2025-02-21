@@ -1,4 +1,4 @@
-import { View, Text, Button, Image, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
+import { View, Text, Button, Image, StyleSheet, TouchableOpacity, Dimensions, Platform } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { ScrollView } from "react-native";
@@ -57,7 +57,6 @@ const ProductDetail = () => {
       else {
         alert(data.message);
       }
-      console.log(data);
     } catch (error) {
       console.log(error);
       alert(error);
@@ -292,8 +291,8 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   cloth: {
-    width: 390,
-    height: 330,
+    width: Platform.OS === 'ios' ? 390 : 300,
+    height: Platform.OS === 'ios' ? 330 : 300,
     padding: 4,
     marginTop: 40,
     marginHorizontal: 0, // Add spacing between images
@@ -309,7 +308,7 @@ const styles = StyleSheet.create({
   },
   btn: {
     position: "relative",
-    bottom: "90%",
+    bottom: Platform.OS === 'ios' ? "92%" : "94%",
     right: "40%",
     backgroundColor: "white",
     zIndex: 100,

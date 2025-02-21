@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Image, StyleSheet, ScrollView, StatusBar, useColorScheme, TextInput, TouchableOpacity, } from "react-native";
+import { View, Text, Image, StyleSheet, ScrollView, StatusBar, useColorScheme, TextInput, TouchableOpacity, Platform} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -189,10 +189,9 @@ const styles = StyleSheet.create({
     },
     navbar: {
         alignItems: "center",
-        backgroundColor: "black",
-        color: "black",
+        backgroundColor: "#000",
         flexDirection: "row",
-        height: 80,
+        height: Platform.OS === 'ios' ? 80 : 60,
         justifyContent: "center",
         position: "relative",
         top: 0,
@@ -200,13 +199,13 @@ const styles = StyleSheet.create({
         zIndex: 1,
     },
     navbarText: {
-        color: "white",
+        color: "#fff",
         fontSize: 12.6,
-        fontWeight: "600",
+        fontWeight: "400",
         letterSpacing: 2.9,
         lineHeight: 22,
         textTransform: "uppercase",
-        paddingTop: 20,
+        paddingTop: Platform.OS === 'ios' ? 20 : 0,
         textAlign: "center",
     },
     //logout section
@@ -312,7 +311,7 @@ const styles = StyleSheet.create({
 
     btn: {
         position: "relative",
-        bottom: "89%",
+        bottom: Platform.OS === 'ios' ? "89%" : "92%",
         left: "6%",
         height: "6%",
         width: "10%",

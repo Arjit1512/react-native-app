@@ -1,23 +1,24 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Platform } from "react-native";
-import { useNavigation, useFocusEffect} from "@react-navigation/native";
+import { useFocusEffect } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import moment from 'moment-timezone';
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Icon } from "react-native-elements";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [userID, setUserID] = useState(null);
   const [userName, setUserName] = useState('');
   const router = useRouter();
-  
+
   // More explicit conversion to IST
   const formatDateToIST = (utcDateString) => {
     return moment(utcDateString).tz('Asia/Kolkata').format('D MMM YYYY, h:mm A');
   };
-  
+
   useFocusEffect(
     React.useCallback(() => {
       const getOrders = async () => {
@@ -25,8 +26,8 @@ const Orders = () => {
           const token = await AsyncStorage.getItem('token');
           const userId = await AsyncStorage.getItem('userId');
           const username = await AsyncStorage.getItem('userName');
-          
-          
+
+
           setUserID(userId);
           setUserName(username);
 
@@ -71,46 +72,48 @@ const Orders = () => {
   }
 
   return (
-    <ScrollView style={styles.mainContainer}>
-      <View>
-        <View style={styles.navbar}>
-          <Text style={styles.navbarText}>THANK YOU <Text style={styles.blink}>{userName}</Text> FOR BEING PART OF OUR HOOD.</Text>
-        </View>
-        <View style={styles.orderdiv}>
-          {orders?.map((order) => {
-            return (
-              <View key={order._id} style={[styles.flexcol, { height: order.length * 100 }]}>
-                <Text style={styles.date}>
-                  Ordered at {formatDateToIST(order.date)}
-                </Text>
-                <Text style={styles.bill}>TOTAL AMOUNT PAID: ₹{order.totalBill}.00</Text>
-                {order?.items?.map((item) => {
-                  return (
-                    <View style={styles.eachorderdiv} key={item._id}>
-                      <View style={styles.rowdiv}>
-                        <Image source={{ uri: `https://sociopedia-bucket.s3.us-east-1.amazonaws.com${item.productImagePath}` }} style={styles.proimg} />
-                        <View style={styles.coldiv}>
-                          <Text style={styles.itemdiv}>Name: {item.productName}</Text>
-                          <Text style={styles.pq}>Quantity: {item.productQuantity} <Text style={{ fontWeight: "700" }}>(Size: {item.productSize})</Text></Text>
-                          <Text>Paid: <Text style={{ fontWeight: "700" }}>₹{item.productEntirePrice}.00</Text></Text>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView style={styles.mainContainer}>
+        <View>
+          <View style={styles.navbar}>
+            <Text style={styles.navbarText}>THANK YOU <Text style={styles.blink}>{userName}</Text> FOR BEING PART OF OUR HOOD.</Text>
+          </View>
+          <View style={styles.orderdiv}>
+            {orders?.map((order) => {
+              return (
+                <View key={order._id} style={[styles.flexcol, { height: order.length * 100 }]}>
+                  <Text style={styles.date}>
+                    Ordered at {formatDateToIST(order.date)}
+                  </Text>
+                  <Text style={styles.bill}>TOTAL AMOUNT PAID: ₹{order.totalBill}.00</Text>
+                  {order?.items?.map((item) => {
+                    return (
+                      <View style={styles.eachorderdiv} key={item._id}>
+                        <View style={styles.rowdiv}>
+                          <Image source={{ uri: `https://sociopedia-bucket.s3.us-east-1.amazonaws.com${item.productImagePath}` }} style={styles.proimg} />
+                          <View style={styles.coldiv}>
+                            <Text style={styles.itemdiv}>Name: {item.productName}</Text>
+                            <Text style={styles.pq}>Quantity: {item.productQuantity} <Text style={{ fontWeight: "700" }}>(Size: {item.productSize})</Text></Text>
+                            <Text>Paid: <Text style={{ fontWeight: "700" }}>₹{item.productEntirePrice}.00</Text></Text>
+                          </View>
                         </View>
                       </View>
-                    </View>
-                  )
-                })}
-              </View>
-            )
-          })}
-        </View>
-        <View style={styles.black}>
-          <Text style={styles.white}>While we deliver your product, please take a look at our brand new collections!</Text>
-        </View>
+                    )
+                  })}
+                </View>
+              )
+            })}
+          </View>
+          <View style={styles.black}>
+            <Text style={styles.white}>While we deliver your product, please take a look at our brand new collections!</Text>
+          </View>
 
-        <TouchableOpacity style={styles.btn} onPress={() => router.back()}>
-          <Icon name="arrow-back" size={24} color="white" />
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+          <TouchableOpacity style={styles.btn} onPress={() => router.back()}>
+            <Icon name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -138,7 +141,7 @@ const styles = StyleSheet.create({
   },
   navbar: {
     backgroundColor: "#000",
-    height: Platform.OS === 'ios' ? 80 : 60,
+    height: Platform.OS === 'ios' ? 60 : 60,
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
@@ -150,7 +153,7 @@ const styles = StyleSheet.create({
     letterSpacing: 2.9,
     lineHeight: 22,
     textTransform: "uppercase",
-    paddingTop: Platform.OS === 'ios' ? 20 : 0,
+    paddingTop: Platform.OS === 'ios' ? 0 : 0,
     textAlign: "center",
   },
   blink: {
@@ -160,7 +163,7 @@ const styles = StyleSheet.create({
   orderdiv: {
     padding: 10,
     width: "100%",
-    marginTop:30
+    marginTop: 30
   },
   eachorderdiv: {
     marginTop: 25
@@ -221,7 +224,7 @@ const styles = StyleSheet.create({
   },
   btn: {
     position: "absolute",
-    bottom: Platform.OS === 'ios' ? '81%' : '96%',
+    bottom: Platform.OS === 'ios' ? '76.5%' : '84%',
     right: "86%",
     backgroundColor: "black",
     zIndex: 100,
@@ -229,7 +232,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "black",
-    width:"10%",
+    width: "10%",
   },
 });
 

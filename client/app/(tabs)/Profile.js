@@ -3,8 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } fr
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import { Icon } from "react-native-elements";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation,useFocusEffect } from '@react-navigation/native';
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 
 const AccountScreen = () => {
   const [userInfo, setUserInfo] = useState({
@@ -12,34 +12,34 @@ const AccountScreen = () => {
     email: '',
     phone: ''
   });
-  const navigation = useNavigation();
+  const router = useRouter();
 
   useFocusEffect(
-      React.useCallback(() => {
-    // Fetch user info from AsyncStorage
-    const getUserInfo = async () => {
-      try {
-        const name = await AsyncStorage.getItem('userName') || '';
-        const email = await AsyncStorage.getItem('email') || '';
-        const phone = await AsyncStorage.getItem('userPhone') || '';
-        // if(!email){
-        //   alert('Please login to view your profile!')
-        //   return
-        // }
-        
-        setUserInfo({ name, email, phone });
-      } catch (error) {
-        console.log('Error fetching user info:', error);
-      }
-    };
-    
-    getUserInfo();
-  }, [])
-);
+    React.useCallback(() => {
+      // Fetch user info from AsyncStorage
+      const getUserInfo = async () => {
+        try {
+          const name = await AsyncStorage.getItem('userName') || '';
+          const email = await AsyncStorage.getItem('email') || '';
+          const phone = await AsyncStorage.getItem('userPhone') || '';
+          // if(!email){
+          //   alert('Please login to view your profile!')
+          //   return
+          // }
+
+          setUserInfo({ name, email, phone });
+        } catch (error) {
+          console.log('Error fetching user info:', error);
+        }
+      };
+
+      getUserInfo();
+    }, [])
+  );
 
   const MenuOption = ({ title, subtitle, onPress, last }) => (
-    <TouchableOpacity 
-      style={[styles.menuItem, last ? styles.lastMenuItem : null]} 
+    <TouchableOpacity
+      style={[styles.menuItem, last ? styles.lastMenuItem : null]}
       onPress={onPress}
     >
       <View>
@@ -65,7 +65,7 @@ const AccountScreen = () => {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Profile</Text>
       </View>
-      
+
       <ScrollView style={styles.scrollView}>
         <View style={styles.profileSection}>
           <View style={styles.avatarContainer}>
@@ -79,8 +79,8 @@ const AccountScreen = () => {
 
         <View style={styles.menuContainer}>
           <MenuOption title="Orders" onPress={() => router.push("/(stack)/Orders")} />
-          <MenuOption title="Customer Care" onPress={() => navigation.navigate('(stack)/CustomerCare')} />
-          
+          <MenuOption title="Customer Care" onPress={() => router.push('(stack)/CustomerCare')} />
+
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
-    fontSize:25
+    fontSize: 25
   },
   lastMenuItem: {
     borderBottomWidth: 0,
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     color: '#000',
     marginTop: 3,
   },
-  
+
 });
 
 export default AccountScreen;

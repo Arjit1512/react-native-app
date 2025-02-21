@@ -1,17 +1,16 @@
 import React, { useState } from "react";
-import { View, Text, Image, StyleSheet, ScrollView, StatusBar, useColorScheme, TextInput, TouchableOpacity, Platform} from "react-native";
+import { View, Text, Image, StyleSheet, ScrollView, StatusBar, useColorScheme, TextInput, TouchableOpacity, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { Icon } from "react-native-elements";
 import Loader from '../../components/Loader.js';
+import { useFocusEffect } from "expo-router";
 
 const Register = () => {
     const [userName, setUserName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const navigation = useNavigation();
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [lg, setlg] = useState(false);
@@ -119,62 +118,63 @@ const Register = () => {
     }
 
     return (
-        <ScrollView style={styles.container}>
-            <View>
-                <View style={styles.navbar}>
-                    <Text style={styles.navbarText}>TRUE HOOD</Text>
-                </View>
+        <SafeAreaView style={{ flex: 1 }}>
+            <ScrollView style={styles.container}>
+                <View>
+                    <View style={styles.navbar}>
+                        <Text style={styles.navbarText}>TRUE HOOD</Text>
+                    </View>
 
-                <View style={styles.loginbox}>
-                    <Text style={styles.title}>This way, to the hood!</Text>
+                    <View style={styles.loginbox}>
+                        <Text style={styles.title}>This way, to the hood!</Text>
 
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Enter your username"
-                        placeholderTextColor="grey"
-                        value={userName}
-                        onChangeText={setUserName}
-                        keyboardType="default"
-                    />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Enter your username"
+                            placeholderTextColor="grey"
+                            value={userName}
+                            onChangeText={setUserName}
+                            keyboardType="default"
+                        />
 
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Enter your email"
-                        placeholderTextColor="grey"
-                        value={email}
-                        onChangeText={setEmail}
-                        keyboardType="email-address"
-                    />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Enter your email"
+                            placeholderTextColor="grey"
+                            value={email}
+                            onChangeText={setEmail}
+                            keyboardType="email-address"
+                        />
 
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Enter your password"
-                        placeholderTextColor="grey"
-                        value={password}
-                        onChangeText={setPassword}
-                        secureTextEntry
-                    />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Enter your password"
+                            placeholderTextColor="grey"
+                            value={password}
+                            onChangeText={setPassword}
+                            secureTextEntry
+                        />
 
-                    <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
-                        <Text style={styles.loginText}>Register</Text>
+                        <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
+                            <Text style={styles.loginText}>Register</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity activeOpacity={0.7} style={styles.registerButton} onPress={() => { console.log("Navigating to Login..."); router.push('/login'); }}>
+                            <View>
+                                <Text style={styles.registerText}>
+                                    Already have an account? <Text style={{ fontWeight: "bold", textDecorationLine: "underline" }}>Login</Text>
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+
+                    <TouchableOpacity style={styles.btn} onPress={() => router.back()}>
+                        <Icon name="arrow-back" size={24} color="white" />
                     </TouchableOpacity>
 
-                    <TouchableOpacity activeOpacity={0.7} style={styles.registerButton} onPress={() => { console.log("Navigating to Login..."); router.push('/login'); }}>
-                        <View>
-                            <Text style={styles.registerText}>
-                                Already have an account? <Text style={{ fontWeight: "bold", textDecorationLine: "underline" }}>Login</Text>
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
                 </View>
-
-                <TouchableOpacity style={styles.btn} onPress={() => router.back()}>
-                    <Icon name="arrow-back" size={24} color="white" />
-                </TouchableOpacity>
-
-            </View>
-        </ScrollView>
-
+            </ScrollView>
+        </SafeAreaView>
     )
 }
 
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: "#000",
         flexDirection: "row",
-        height: Platform.OS === 'ios' ? 80 : 60,
+        height: Platform.OS === 'ios' ? 60 : 60,
         justifyContent: "center",
         position: "relative",
         top: 0,
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
         letterSpacing: 2.9,
         lineHeight: 22,
         textTransform: "uppercase",
-        paddingTop: Platform.OS === 'ios' ? 20 : 0,
+        paddingTop: Platform.OS === 'ios' ? 0 : 0,
         textAlign: "center",
     },
     //logout section
@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
 
     btn: {
         position: "relative",
-        bottom: Platform.OS === 'ios' ? "89%" : "92%",
+        bottom: Platform.OS === 'ios' ? "92%" : "92%",
         left: "6%",
         height: "6%",
         width: "10%",

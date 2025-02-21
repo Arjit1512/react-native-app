@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Button, Platform } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import SplashScreen from "../../components/SplashScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { useFonts } from 'expo-font';
 import Loader from '../../components/Loader.js';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Home = () => {
   const [showSplash, setShowSplash] = useState(true);
-  const navigation = useNavigation();
   const router = useRouter();
   const testimonials = [
     { image: require("../../assets/sources/athlete.jpg") },
@@ -53,39 +52,41 @@ const Home = () => {
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <View>
-        <View style={styles.navbar}>
-          <Text style={styles.navbarText}>WE THE INDEPENDENT</Text>
-        </View>
-
-        <TouchableOpacity
-          onPress={() => {
-            console.log("Navigating to Products...");
-            router.push('/Products');
-          }}
-        >
-          <View style={styles.card}>
-            <Image source={testimonials[index].image} style={styles.image} />
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView style={styles.container}>
+        <View>
+          <View style={styles.navbar}>
+            <Text style={styles.navbarText}>WE THE INDEPENDENT</Text>
           </View>
-        </TouchableOpacity>
 
-        {/* Testimonial Section */}
-        <View style={styles.typist}>
-          <Image source={require("../../assets/sources/ts.jpg")} style={{ width: 160, height: 160 }} />
-          <Text style={styles.typewriter}>
-            " We sincerely promise that our exclusive t-shirt designs, crafted with the finest fabrics and the latest trends, will not only match your style but also leave you absolutely impressed with their comfort and uniqueness. Experience the perfect blend of fashion and quality like never before! "
-          </Text>
-        </View>
+          <TouchableOpacity
+            onPress={() => {
+              console.log("Navigating to Products...");
+              router.push('/Products');
+            }}
+          >
+            <View style={styles.card}>
+              <Image source={testimonials[index].image} style={styles.image} />
+            </View>
+          </TouchableOpacity>
 
-        <View style={{ marginTop: 20 }}>
-          <Image source={require("../../assets/sources/hof.jpg")} style={{ width: "100%", height: 300}} />
-          {/* <Text style={[styles.typewriter,{backgroundColor:"black",color:"white",position:"relative",bottom:"45%",left:"25%",lineHeight:20,fontSize:14,textAlign:"center"}]}>
+          {/* Testimonial Section */}
+          <View style={styles.typist}>
+            <Image source={require("../../assets/sources/ts.jpg")} style={{ width: 160, height: 160 }} />
+            <Text style={styles.typewriter}>
+              " We sincerely promise that our exclusive t-shirt designs, crafted with the finest fabrics and the latest trends, will not only match your style but also leave you absolutely impressed with their comfort and uniqueness. Experience the perfect blend of fashion and quality like never before! "
+            </Text>
+          </View>
+
+          <View style={{ marginTop: 20 }}>
+            <Image source={require("../../assets/sources/hof.jpg")} style={{ width: "100%", height: 300 }} />
+            {/* <Text style={[styles.typewriter,{backgroundColor:"black",color:"white",position:"relative",bottom:"45%",left:"25%",lineHeight:20,fontSize:14,textAlign:"center"}]}>
             Currently we dont have a content to paste here!
           </Text> */}
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -99,7 +100,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#000",
     flexDirection: "row",
-    height: Platform.OS === 'ios' ? 80 : 60,
+    height: Platform.OS === 'ios' ? 60 : 60,
     justifyContent: "center",
     position: "relative",
     top: 0,
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
     letterSpacing: 2.9,
     lineHeight: 22,
     textTransform: "uppercase",
-    paddingTop: Platform.OS === 'ios' ? 20 : 0,
+    paddingTop: Platform.OS === 'ios' ? 0 : 0,
     textAlign: "center",
   },
   card: {
@@ -137,14 +138,14 @@ const styles = StyleSheet.create({
     width: "100%",
     zIndex: 1,
     flexDirection: "row",
-    backgroundColor:"white"
+    backgroundColor: "white"
   },
   typewriter: {
     fontFamily: "Inconsolata",
     fontSize: 9,
     lineHeight: 12,
     width: "50%",
-    marginTop: 30
+    marginTop: 25
   },
 });
 

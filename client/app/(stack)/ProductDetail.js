@@ -1,5 +1,5 @@
 import { View, Text, Button, Image, StyleSheet, TouchableOpacity, Dimensions, Platform } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
+
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { ScrollView } from "react-native";
 import { Icon } from "react-native-elements";
@@ -7,10 +7,9 @@ import RNPickerSelect from "react-native-picker-select";
 import { useState } from "react";
 import Loader from "../../components/Loader";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ProductDetail = () => {
-  const navigation = useNavigation();
-  const route = useRoute();
   //const product = route.params?.product;
   const windowWidth = Dimensions.get("window").width;
   const router = useRouter();
@@ -50,7 +49,7 @@ const ProductDetail = () => {
         alert("Item added to cart successfully!");
         setSelectedSize(null);
       }
-      else if(data.message==="Invalid token"){
+      else if (data.message === "Invalid token") {
         router.push("/login");
         alert("Please login first to add items in your cart!");
       }
@@ -70,7 +69,7 @@ const ProductDetail = () => {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Product Not Found</Text>
-        <Button title="Go Back" onPress={() => navigation.goBack()} />
+        <Button title="Go Back" onPress={() => router.back()} />
       </View>
     );
   }
@@ -82,147 +81,149 @@ const ProductDetail = () => {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.container}>
-        <ScrollView
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          onScroll={(event) => {
-            const contentOffsetX = event.nativeEvent.contentOffset.x;
-            const index = Math.round(contentOffsetX / windowWidth);
-            setCurrentIndex(index);
-          }}
-          scrollEventThrottle={16}
-          style={styles.imageScroll}
-        >
-          <Image
-            source={product.imgURL}
-            resizeMode="cover"
-            style={[styles.cloth, { width: windowWidth }]}
-          />
-          <Image
-            source={product.altURL}
-            resizeMode="cover"
-            style={[styles.cloth, { width: windowWidth }]}
-          />
-        </ScrollView>
-        <View style={styles.pagination}>
-          {[product.imgURL, product.altURL].map((_, index) => (
-            <View
-              key={index}
-              style={[
-                styles.dot,
-                { backgroundColor: currentIndex === index ? "black" : "gray" }
-              ]}
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.container}>
+          <ScrollView
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            onScroll={(event) => {
+              const contentOffsetX = event.nativeEvent.contentOffset.x;
+              const index = Math.round(contentOffsetX / windowWidth);
+              setCurrentIndex(index);
+            }}
+            scrollEventThrottle={16}
+            style={styles.imageScroll}
+          >
+            <Image
+              source={product.imgURL}
+              resizeMode="cover"
+              style={[styles.cloth, { width: windowWidth }]}
             />
-          ))}
-        </View>
-        <View style={styles.slide}>
-          <Text style={styles.title}>{product.name}</Text>
-          <Text style={styles.ots}>OVERSIZED T-SHIRT</Text>
-          <Text style={styles.price}>₹{product.price}.00</Text>
+            <Image
+              source={product.altURL}
+              resizeMode="cover"
+              style={[styles.cloth, { width: windowWidth }]}
+            />
+          </ScrollView>
+          <View style={styles.pagination}>
+            {[product.imgURL, product.altURL].map((_, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.dot,
+                  { backgroundColor: currentIndex === index ? "black" : "gray" }
+                ]}
+              />
+            ))}
+          </View>
+          <View style={styles.slide}>
+            <Text style={styles.title}>{product.name}</Text>
+            <Text style={styles.ots}>OVERSIZED T-SHIRT</Text>
+            <Text style={styles.price}>₹{product.price}.00</Text>
 
-          <View style={styles.sizeContainer}>
-            <Text style={styles.sz}>Size: </Text>
+            <View style={styles.sizeContainer}>
+              <Text style={styles.sz}>Size: </Text>
 
-            <TouchableOpacity
-              style={[styles.sizebtn, selectedSize === "S" && styles.selectedSizebtn]}
-              onPress={() => setSelectedSize("S")}
-            >
-              <Text style={[styles.sizeText, selectedSize === "S" && styles.selectedSizeText]}>S</Text>
+              <TouchableOpacity
+                style={[styles.sizebtn, selectedSize === "S" && styles.selectedSizebtn]}
+                onPress={() => setSelectedSize("S")}
+              >
+                <Text style={[styles.sizeText, selectedSize === "S" && styles.selectedSizeText]}>S</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.sizebtn, selectedSize === "M" && styles.selectedSizebtn]}
+                onPress={() => setSelectedSize("M")}
+              >
+                <Text style={[styles.sizeText, selectedSize === "M" && styles.selectedSizeText]}>M</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.sizebtn, selectedSize === "L" && styles.selectedSizebtn]}
+                onPress={() => setSelectedSize("L")}
+              >
+                <Text style={[styles.sizeText, selectedSize === "L" && styles.selectedSizeText]}>L</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.sizebtn, selectedSize === "XL" && styles.selectedSizebtn]}
+                onPress={() => setSelectedSize("XL")}
+              >
+                <Text style={[styles.sizeText, selectedSize === "XL" && styles.selectedSizeText]}>XL</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.sizebtn, selectedSize === "XXL" && styles.selectedSizebtn]}
+                onPress={() => setSelectedSize("XXL")}
+              >
+                <Text style={[styles.sizeText, selectedSize === "XXL" && styles.selectedSizeText]}>XXL</Text>
+              </TouchableOpacity>
+            </View>
+
+            <TouchableOpacity style={styles.addToCartBtn} onPress={() => handleAddCart(product.id, selectedSize)}>
+              <Text style={styles.addToCartText}>ADD TO CART</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.sizebtn, selectedSize === "M" && styles.selectedSizebtn]}
-              onPress={() => setSelectedSize("M")}
-            >
-              <Text style={[styles.sizeText, selectedSize === "M" && styles.selectedSizeText]}>M</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.sizebtn, selectedSize === "L" && styles.selectedSizebtn]}
-              onPress={() => setSelectedSize("L")}
-            >
-              <Text style={[styles.sizeText, selectedSize === "L" && styles.selectedSizeText]}>L</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.sizebtn, selectedSize === "XL" && styles.selectedSizebtn]}
-              onPress={() => setSelectedSize("XL")}
-            >
-              <Text style={[styles.sizeText, selectedSize === "XL" && styles.selectedSizeText]}>XL</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.sizebtn, selectedSize === "XXL" && styles.selectedSizebtn]}
-              onPress={() => setSelectedSize("XXL")}
-            >
-              <Text style={[styles.sizeText, selectedSize === "XXL" && styles.selectedSizeText]}>XXL</Text>
-            </TouchableOpacity>
+            <Text style={styles.h1}>Product Detail: </Text>
+            <Text style={styles.description}>Experience ultimate comfort and style with our premium True Hood T-shirt. Crafted from 100% soft, breathable cotton.
+              {"\n"}Details: Product is of 240GSM (Oversized) with a 9 x 12 inch design on it.</Text>
           </View>
 
-          <TouchableOpacity style={styles.addToCartBtn} onPress={() => handleAddCart(product.id, selectedSize)}>
-            <Text style={styles.addToCartText}>ADD TO CART</Text>
+          {/* Table */}
+          <View style={styles.sizeTableContainer}>
+            <Text style={styles.sizeTableTitle}>Size Chart</Text>
+            <View style={styles.sizeTable}>
+              <View style={styles.sizeTableRow}>
+                <Text style={[styles.sizeTableCell, styles.headerCell]}>Size</Text>
+                <Text style={[styles.sizeTableCell, styles.headerCell]}>S</Text>
+                <Text style={[styles.sizeTableCell, styles.headerCell]}>M</Text>
+                <Text style={[styles.sizeTableCell, styles.headerCell]}>L</Text>
+                <Text style={[styles.sizeTableCell, styles.headerCell]}>XL</Text>
+                <Text style={[styles.sizeTableCell, styles.headerCell]}>XXL</Text>
+                <Text style={[styles.sizeTableCell, styles.headerCell]}>XXXL</Text>
+              </View>
+
+              <View style={styles.sizeTableRow}>
+                <Text style={[styles.sizeTableCell, styles.labelCell]}>Chest (in)</Text>
+                <Text style={styles.sizeTableCell}>42</Text>
+                <Text style={styles.sizeTableCell}>44</Text>
+                <Text style={styles.sizeTableCell}>46</Text>
+                <Text style={styles.sizeTableCell}>48</Text>
+                <Text style={styles.sizeTableCell}>50</Text>
+                <Text style={styles.sizeTableCell}>52</Text>
+              </View>
+
+              <View style={styles.sizeTableRow}>
+                <Text style={[styles.sizeTableCell, styles.labelCell]}>Length (in)</Text>
+                <Text style={styles.sizeTableCell}>29</Text>
+                <Text style={styles.sizeTableCell}>29.75</Text>
+                <Text style={styles.sizeTableCell}>30.5</Text>
+                <Text style={styles.sizeTableCell}>31.25</Text>
+                <Text style={styles.sizeTableCell}>32</Text>
+                <Text style={styles.sizeTableCell}>32.75</Text>
+              </View>
+
+              <View style={styles.sizeTableRow}>
+                <Text style={[styles.sizeTableCell, styles.labelCell]}>Shoulder (in)</Text>
+                <Text style={styles.sizeTableCell}>20.5</Text>
+                <Text style={styles.sizeTableCell}>21.25</Text>
+                <Text style={styles.sizeTableCell}>22</Text>
+                <Text style={styles.sizeTableCell}>22.75</Text>
+                <Text style={styles.sizeTableCell}>23.5</Text>
+                <Text style={styles.sizeTableCell}>24.25</Text>
+              </View>
+            </View>
+          </View>
+
+
+          <TouchableOpacity style={styles.btn} onPress={() => router.back()}>
+            <Icon name="arrow-back" size={24} color="black" />
           </TouchableOpacity>
-
-          <Text style={styles.h1}>Product Detail: </Text>
-          <Text style={styles.description}>Experience ultimate comfort and style with our premium True Hood T-shirt. Crafted from 100% soft, breathable cotton.
-            {"\n"}Details: Product is of 240GSM (Oversized) with a 9 x 12 inch design on it.</Text>
         </View>
-
-        {/* Table */}
-        <View style={styles.sizeTableContainer}>
-          <Text style={styles.sizeTableTitle}>Size Chart</Text>
-          <View style={styles.sizeTable}>
-            <View style={styles.sizeTableRow}>
-              <Text style={[styles.sizeTableCell, styles.headerCell]}>Size</Text>
-              <Text style={[styles.sizeTableCell, styles.headerCell]}>S</Text>
-              <Text style={[styles.sizeTableCell, styles.headerCell]}>M</Text>
-              <Text style={[styles.sizeTableCell, styles.headerCell]}>L</Text>
-              <Text style={[styles.sizeTableCell, styles.headerCell]}>XL</Text>
-              <Text style={[styles.sizeTableCell, styles.headerCell]}>XXL</Text>
-              <Text style={[styles.sizeTableCell, styles.headerCell]}>XXXL</Text>
-            </View>
-
-            <View style={styles.sizeTableRow}>
-              <Text style={[styles.sizeTableCell, styles.labelCell]}>Chest (in)</Text>
-              <Text style={styles.sizeTableCell}>42</Text>
-              <Text style={styles.sizeTableCell}>44</Text>
-              <Text style={styles.sizeTableCell}>46</Text>
-              <Text style={styles.sizeTableCell}>48</Text>
-              <Text style={styles.sizeTableCell}>50</Text>
-              <Text style={styles.sizeTableCell}>52</Text>
-            </View>
-
-            <View style={styles.sizeTableRow}>
-              <Text style={[styles.sizeTableCell, styles.labelCell]}>Length (in)</Text>
-              <Text style={styles.sizeTableCell}>29</Text>
-              <Text style={styles.sizeTableCell}>29.75</Text>
-              <Text style={styles.sizeTableCell}>30.5</Text>
-              <Text style={styles.sizeTableCell}>31.25</Text>
-              <Text style={styles.sizeTableCell}>32</Text>
-              <Text style={styles.sizeTableCell}>32.75</Text>
-            </View>
-
-            <View style={styles.sizeTableRow}>
-              <Text style={[styles.sizeTableCell, styles.labelCell]}>Shoulder (in)</Text>
-              <Text style={styles.sizeTableCell}>20.5</Text>
-              <Text style={styles.sizeTableCell}>21.25</Text>
-              <Text style={styles.sizeTableCell}>22</Text>
-              <Text style={styles.sizeTableCell}>22.75</Text>
-              <Text style={styles.sizeTableCell}>23.5</Text>
-              <Text style={styles.sizeTableCell}>24.25</Text>
-            </View>
-          </View>
-        </View>
-
-
-        <TouchableOpacity style={styles.btn} onPress={() => router.back()}>
-          <Icon name="arrow-back" size={24} color="black" />
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -241,7 +242,7 @@ const styles = StyleSheet.create({
     fontFamily: "Inconsolata-Bold",
     fontSize: 22,
     width: "40%",
-    marginTop:20,
+    marginTop: 20,
   },
   price: {
     fontSize: 20,
@@ -277,7 +278,7 @@ const styles = StyleSheet.create({
     fontWeight: "300",
     position: "relative",
     top: "2%",
-    color:"grey"
+    color: "grey"
   },
   slide: {
     textAlign: "left",

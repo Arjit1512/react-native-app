@@ -3,12 +3,14 @@ import React, { useEffect, useState, useCallback } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useFocusEffect } from 'expo-router';
 import { BlurView } from 'expo-blur';
 import Loader from '../../components/Loader.js';
 import { WebView } from 'react-native-webview';
 import RazorpayCheckout from '../../components/RazorpayCheckout';
 import axios from 'axios';
+import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Cart = () => {
   const [userID, setUserID] = useState(null);
@@ -17,7 +19,7 @@ const Cart = () => {
   const [loading, setLoading] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
   const [addressPopup, showAddressPopup] = useState(false);
-  const navigation = useNavigation();
+  const router = useRouter();
 
   const [address, setAddress] = useState({
     street: "",
@@ -254,7 +256,7 @@ const Cart = () => {
         setFlagArray([]);
         setAddress({ street: '', city: '', state: '', pincode: '' });
 
-        navigation.navigate('/(stack)/Orders');
+        router.push('/(stack)/Orders');
       }
     } catch (error) {
       console.error('Error processing order:', error);
@@ -325,6 +327,7 @@ const Cart = () => {
   const totalBill = items.reduce((acc, item) => acc + item.totalBill, 0);
 
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
     <GestureHandlerRootView>
       <View style={styles.container}>
         <Text style={styles.navbarText}>YOUR CART</Text>
@@ -336,7 +339,7 @@ const Cart = () => {
 
                   <Image source={{ uri: `https://sociopedia-bucket.s3.us-east-1.amazonaws.com${item.imagePath}` }} style={styles.proimg} />
                   <View style={styles.inside}>
-                    <Text>{item.product_name}</Text>
+                    <Text style={styles.small}>{item.product_name}</Text>
                     <Text style={styles.grey}>OVERSIZED T-SHIRT</Text>
                     <View style={styles.smallgap}>
                       <Text style={styles.textsize}>Size: {item.size}</Text>
@@ -446,6 +449,7 @@ const Cart = () => {
         )}
       </View>
     </GestureHandlerRootView>
+    </SafeAreaView>
   )
 }
 
@@ -466,7 +470,7 @@ const styles = StyleSheet.create({
     letterSpacing: 2.9,
     lineHeight: 22,
     textTransform: "uppercase",
-    paddingTop: 50,
+    paddingTop: 30,
     textAlign: "center",
   },
   emptyContainer: {
@@ -506,6 +510,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
     paddingTop: 3
+  },
+  small:{
+    fontSize: Platform.OS === 'ios' ? 16 : 13,
+    fontFamily:"inconsolata-Bold"
   },
   proimg: {
     width: "40%",
@@ -609,7 +617,7 @@ const styles = StyleSheet.create({
   /*address-popup*/
   popupContainer: {
     position: 'absolute',
-    top: 80,
+    top: 0,
     left: 0,
     right: 0,
     bottom: 0,

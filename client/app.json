@@ -34,8 +34,7 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-font",
-      "expo-razorpay"
+      "expo-font"
     ],
     "fonts": {
       "Inconsolata-Regular": "./assets/fonts/Inconsolata_400Regular.ttf",
@@ -48,6 +47,14 @@
     "typeRoots": [
       "../node_modules/@types",
       "../@types"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "c91c5b17-8c35-4294-a5dc-d331829c40a3"
+      }
+    }
   }
 }

@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import { View, Text, Image, StyleSheet, ScrollView, StatusBar, useColorScheme, TextInput, TouchableOpacity, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import Loader from '../../components/Loader.js';
+import { useFocusEffect } from "expo-router";
 
 const login = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigation = useNavigation();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [lg, setlg] = useState(false);
@@ -100,29 +99,30 @@ const login = () => {
 
   if (lg) {
     return (
-      <View style={styles.center} >
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>Do you want to logout?</Text>
-          <View style={{ display: "flex", flexDirection: "row", gap: 20 }}>
-            <TouchableOpacity
-              style={styles.submitButton}
-              onPress={handleLogout}
-            >
-              <Text style={styles.submitButtonText}>Yes</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.submitButton}
-              onPress={() => router.back()}
-            >
-              <Text style={styles.submitButtonText}>No</Text>
-            </TouchableOpacity>
+        <View style={styles.center} >
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>Do you want to logout?</Text>
+            <View style={{ display: "flex", flexDirection: "row", gap: 20 }}>
+              <TouchableOpacity
+                style={styles.submitButton}
+                onPress={handleLogout}
+              >
+                <Text style={styles.submitButtonText}>Yes</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.submitButton}
+                onPress={() => router.back()}
+              >
+                <Text style={styles.submitButtonText}>No</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
     )
   }
 
   return (
+    <SafeAreaView style={{ flex: 1 }}>
     <ScrollView style={styles.container}>
       <View>
         <View style={styles.navbar}>
@@ -164,6 +164,7 @@ const login = () => {
         </View>
       </View>
     </ScrollView>
+    </SafeAreaView>
 
   )
 }
@@ -224,7 +225,7 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     color: "black",
     flexDirection: "row",
-    height: Platform.OS === 'ios' ? 80 : 60,
+    height: Platform.OS === 'ios' ? 60 : 60,
     justifyContent: "center",
     position: "relative",
     top: 0,
@@ -238,7 +239,7 @@ const styles = StyleSheet.create({
     letterSpacing: 2.9,
     lineHeight: 22,
     textTransform: "uppercase",
-    paddingTop: Platform.OS === 'ios' ? 20 : 0,
+    paddingTop: Platform.OS === 'ios' ? 0 : 0,
     textAlign: "center",
   },
   loginbox: {

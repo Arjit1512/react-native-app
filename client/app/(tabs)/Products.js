@@ -24,31 +24,33 @@ const Products = () => {
         }
       });
     } catch (error) {
-      console.log("Navigation Error: ", error);
+      console.log("Error: ", error);
     }
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.navbar}>
-        <Text style={styles.navbarText}>OUR COLLECTIONS</Text>
-      </View>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView style={styles.container}>
+        <View style={styles.navbar}>
+          <Text style={styles.navbarText}>OUR COLLECTIONS</Text>
+        </View>
 
-      <View style={styles.closet}>
-        {clothes.map((item) => (
-          <TouchableOpacity 
-            key={item.id} 
-            onPress={() => handlePress(item)} 
-            style={styles.productContainer}
-          >
-            <Image source={item.imgURL} style={styles.cloth} />
-            <Text style={styles.ots}>Oversized T-Shirt</Text>
-            <Text style={styles.productName}>{item.name}</Text>
-            <Text style={styles.productPrice}>₹{item.price}.00</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </ScrollView>
+        <View style={styles.closet}>
+          {clothes.map((item) => (
+            <TouchableOpacity
+              key={item.id}
+              onPress={() => handlePress(item)}
+              style={styles.productContainer}
+            >
+              <Image source={item.imgURL} style={styles.cloth} />
+              <Text style={styles.ots}>Oversized T-Shirt</Text>
+              <Text style={styles.productName}>{item.name}</Text>
+              <Text style={styles.productPrice}>₹{item.price}.00</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -63,7 +65,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#000",
     flexDirection: "row",
-    height: Platform.OS === 'ios' ? 80 : 60,
+    height: Platform.OS === 'ios' ? 60 : 60,
     justifyContent: "center",
     position: "relative",
     top: 0,
@@ -77,7 +79,7 @@ const styles = StyleSheet.create({
     letterSpacing: 2.9,
     lineHeight: 22,
     textTransform: "uppercase",
-    paddingTop: Platform.OS === 'ios' ? 20 : 0,
+    paddingTop: Platform.OS === 'ios' ? 0 : 0,
     textAlign: "center",
   },
   closet: {
@@ -93,8 +95,8 @@ const styles = StyleSheet.create({
     width: 350,
     objectFit: "cover",
   },
-  productName:{
-    fontFamily:"inconsolata-Bold",
+  productName: {
+    fontFamily: "inconsolata-Bold",
     fontSize: 17,
   },
   ots: {

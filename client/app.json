@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "True Hood",
-    "slug": "true-hood",
+    "slug": "client",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/sources/real-logo-hstar.png",

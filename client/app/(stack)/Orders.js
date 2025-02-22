@@ -135,9 +135,8 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     textAlign: "center",
-    fontWeight: "500",
-    fontSize: 16,
-    fontFamily: "Inconsolata"
+    fontSize: Platform.OS=== 'ios' ? 16: 14,
+    fontFamily: "Inconsolata-Bold"
   },
   navbar: {
     backgroundColor: "#000",
@@ -177,9 +176,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   date: {
-    fontSize: 18,
+    fontSize: Platform.OS=== 'ios' ? 18 :16,
     fontWeight: "600",
-    fontFamily: "inconsolata-bold"
+    fontFamily: "Inconsolata-Bold"
   },
   bill: {
     fontSize: 12.6,
@@ -199,7 +198,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     width: "100%",
     marginTop: 5,
-    fontFamily: "inconsolata"
+    fontFamily: "Inconsolata"
   },
   proimg: {
     height: 170,

@@ -3,13 +3,22 @@ import { StyleSheet, View, Text, Image, TouchableOpacity, ScrollView, Linking, P
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from 'expo-status-bar';
 import { FontAwesome } from '@expo/vector-icons';
+import { useFonts } from 'expo-font';
+import * as Font from 'expo-font';
 import { Icon } from "react-native-elements";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Loader from '@/components/Loader';
 
 const CustomerCare = () => {
     const [isOpen, setIsOpen] = useState(false);
     const router = useRouter();
+    let [fontsLoaded] = useFonts({
+        "Inconsolata": require("../../assets/fonts/Inconsolata_400Regular.ttf"),
+        "Inconsolata-Bold": require("../../assets/fonts/Inconsolata_700Bold.ttf"),
+        "SpaceMono-Regular": require("../../assets/fonts/SpaceMono-Regular.ttf"),
+    });
+
 
     const handleEmail = () => {
         Linking.openURL('mailto:truehood.business@gmail.com');
@@ -60,11 +69,13 @@ const CustomerCare = () => {
                     <Text style={styles.text}>
                         This is our operational address for correspondence and administrative purposes.
                     </Text>
-                    <Image
-                        source={require('../../assets/sources/map.png')}
-                        style={styles.mapImage}
-                        resizeMode="cover"
-                    />
+                    <TouchableOpacity onPress={() => Linking.openURL('https://maps.app.goo.gl/Kpbw2tLMGsb5H8SBA?g_st=iw')}>
+                        <Image
+                            source={require('../../assets/sources/map.png')}
+                            style={styles.mapImage}
+                            resizeMode="cover"
+                        />
+                    </TouchableOpacity>
                 </View>
 
                 {/* Other Sections */}
@@ -211,8 +222,9 @@ const styles = StyleSheet.create({
         borderBottomColor: '#eee',
     },
     b: {
-        fontWeight: 'bold',
-        color: "black"
+        color: "black",
+        fontFamily: "Inconsolata-Bold",
+        fontSize: 17
     },
     sectionTitle: {
         fontSize: 24,
@@ -229,7 +241,7 @@ const styles = StyleSheet.create({
         lineHeight: 24,
         marginBottom: 15,
         color: 'gray',
-        fontFamily: 'inconsolata'
+        fontFamily: 'Inconsolata'
     },
     contactItem: {
         flexDirection: 'row',
@@ -253,16 +265,16 @@ const styles = StyleSheet.create({
         textDecorationLine: 'underline',
     },
     btn: {
-      position: "absolute",
-      bottom: Platform.OS === 'ios' ? '245.6%' : '240.7%',
-      right: "95%",
-      backgroundColor: "white",
-      zIndex: 100,
-      padding: 6,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: "black",
-      width: "13%",
+        position: "absolute",
+        bottom: Platform.OS === 'ios' ? '245.6%' : '237%',
+        right: "95%",
+        backgroundColor: "white",
+        zIndex: 100,
+        padding: 6,
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: "black",
+        width: "13%",
     },
 });
 

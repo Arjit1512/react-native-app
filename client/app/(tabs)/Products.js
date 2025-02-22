@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     objectFit: "cover",
   },
   productName: {
-    fontFamily: "inconsolata-Bold",
+    fontFamily: "Inconsolata-Bold",
     fontSize: 17,
   },
   ots: {

@@ -3,6 +3,8 @@ import { View, Text, Image, StyleSheet, ScrollView, StatusBar, useColorScheme, T
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
+import { useFonts } from 'expo-font';
+import * as Font from 'expo-font';
 import { Icon } from "react-native-elements";
 import Loader from '../../components/Loader.js';
 import { useFocusEffect } from "expo-router";
@@ -14,7 +16,11 @@ const Register = () => {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [lg, setlg] = useState(false);
-
+    let [fontsLoaded] = useFonts({
+        "Inconsolata": require("../../assets/fonts/Inconsolata_400Regular.ttf"),
+        "Inconsolata-Bold": require("../../assets/fonts/Inconsolata_700Bold.ttf"),
+        "SpaceMono-Regular": require("../../assets/fonts/SpaceMono-Regular.ttf"),
+    });
     useFocusEffect(
         React.useCallback(() => {
             const load = async () => {
@@ -264,12 +270,11 @@ const styles = StyleSheet.create({
         gap: 20
     },
     title: {
-        fontFamily: "Inconsolata-Bold",
-        fontSize: 20,
+        fontSize: 18,
         lineHeight: 12,
         padding: 20,
-        fontWeight: "800",
-        color: "white"
+        color: "white",
+        fontFamily: "Inconsolata-Bold",
     },
     input: {
         width: "100%",

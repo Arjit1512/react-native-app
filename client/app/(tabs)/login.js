@@ -3,6 +3,8 @@ import { View, Text, Image, StyleSheet, ScrollView, StatusBar, useColorScheme, T
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
+import { useFonts } from 'expo-font';
+import * as Font from 'expo-font';
 import Loader from '../../components/Loader.js';
 import { useFocusEffect } from "expo-router";
 
@@ -13,7 +15,11 @@ const login = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [lg, setlg] = useState(false);
-
+  let [fontsLoaded] = useFonts({
+    "Inconsolata": require("../../assets/fonts/Inconsolata_400Regular.ttf"),
+    "Inconsolata-Bold": require("../../assets/fonts/Inconsolata_700Bold.ttf"),
+    "SpaceMono-Regular": require("../../assets/fonts/SpaceMono-Regular.ttf"),
+  });
   useFocusEffect(
     React.useCallback(() => {
       const load = async () => {
@@ -99,71 +105,71 @@ const login = () => {
 
   if (lg) {
     return (
-        <View style={styles.center} >
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>Do you want to logout?</Text>
-            <View style={{ display: "flex", flexDirection: "row", gap: 20 }}>
-              <TouchableOpacity
-                style={styles.submitButton}
-                onPress={handleLogout}
-              >
-                <Text style={styles.submitButtonText}>Yes</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.submitButton}
-                onPress={() => router.back()}
-              >
-                <Text style={styles.submitButtonText}>No</Text>
-              </TouchableOpacity>
-            </View>
+      <View style={styles.center} >
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>Do you want to logout?</Text>
+          <View style={{ display: "flex", flexDirection: "row", gap: 20 }}>
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={handleLogout}
+            >
+              <Text style={styles.submitButtonText}>Yes</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={() => router.back()}
+            >
+              <Text style={styles.submitButtonText}>No</Text>
+            </TouchableOpacity>
           </View>
         </View>
+      </View>
     )
   }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-    <ScrollView style={styles.container}>
-      <View>
-        <View style={styles.navbar}>
-          <Text style={styles.navbarText}>TRUE HOOD</Text>
+      <ScrollView style={styles.container}>
+        <View>
+          <View style={styles.navbar}>
+            <Text style={styles.navbarText}>TRUE HOOD</Text>
+          </View>
+
+          <View style={styles.loginbox}>
+            <Text style={styles.title}>This way, to the hood!</Text>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your email"
+              placeholderTextColor="grey"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your password"
+              placeholderTextColor="grey"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
+
+            <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
+              <Text style={styles.loginText}>Login</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity activeOpacity={0.7} style={styles.registerButton} onPress={() => { console.log("Navigating to Register..."); router.push('/(stack)/Register'); }}>
+              <View>
+                <Text style={styles.registerText}>
+                  No account? <Text style={{ fontWeight: "bold", textDecorationLine: "underline" }}>Register</Text>
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
-
-        <View style={styles.loginbox}>
-          <Text style={styles.title}>This way, to the hood!</Text>
-
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your email"
-            placeholderTextColor="grey"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your password"
-            placeholderTextColor="grey"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
-
-          <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
-            <Text style={styles.loginText}>Login</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity activeOpacity={0.7} style={styles.registerButton} onPress={() => { console.log("Navigating to Register..."); router.push('/(stack)/Register'); }}>
-            <View>
-              <Text style={styles.registerText}>
-                No account? <Text style={{ fontWeight: "bold", textDecorationLine: "underline" }}>Register</Text>
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
     </SafeAreaView>
 
   )
@@ -256,12 +262,11 @@ const styles = StyleSheet.create({
     gap: 20
   },
   title: {
-    fontFamily: "Inconsolata-Bold",
-    fontSize: 20,
+    fontSize: 18,
     lineHeight: 12,
     padding: 20,
-    fontWeight: "800",
-    color: "white"
+    color: "white",
+    fontFamily: "Inconsolata-Bold",
   },
   input: {
     width: "100%",

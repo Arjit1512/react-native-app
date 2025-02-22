@@ -4,6 +4,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
+import { useFonts } from 'expo-font';
+import * as Font from 'expo-font';
 import { BlurView } from 'expo-blur';
 import Loader from '../../components/Loader.js';
 import { WebView } from 'react-native-webview';
@@ -20,7 +22,11 @@ const Cart = () => {
   const [showPayment, setShowPayment] = useState(false);
   const [addressPopup, showAddressPopup] = useState(false);
   const router = useRouter();
-
+  let [fontsLoaded] = useFonts({
+      "Inconsolata": require("../../assets/fonts/Inconsolata_400Regular.ttf"),
+      "Inconsolata-Bold": require("../../assets/fonts/Inconsolata_700Bold.ttf"),
+      "SpaceMono-Regular": require("../../assets/fonts/SpaceMono-Regular.ttf"),
+    });
   const [address, setAddress] = useState({
     street: "",
     city: "",
@@ -480,9 +486,8 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     textAlign: "center",
-    fontWeight: "500",
-    fontSize: 16,
-    fontFamily: "Inconsolata"
+    fontSize: Platform.OS=== 'ios' ? 16: 14,
+    fontFamily: "Inconsolata-Bold"
   },
   textsize: {
     fontWeight: "400"
@@ -513,7 +518,7 @@ const styles = StyleSheet.create({
   },
   small:{
     fontSize: Platform.OS === 'ios' ? 16 : 13,
-    fontFamily:"inconsolata-Bold"
+    fontFamily:"Inconsolata-Bold"
   },
   proimg: {
     width: "40%",
@@ -649,12 +654,10 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   popupTitle: {
-    fontSize: 18,
-    fontWeight: '600',
     marginBottom: 20,
     textAlign: 'center',
     color: 'black',
-    fontFamily: 'Inconsolata-Bold'
+    fontFamily: 'Inconsolata-Bold', 
   },
   input: {
     width: '100%',

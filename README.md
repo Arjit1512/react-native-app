@@ -13,13 +13,11 @@
 ## 🛠 Tech Stack
 ### **Frontend**
 - React Native (with Expo)
-- React Navigation for smooth user flow
-- Redux for state management
+- Expo Router for smooth user flow
 
 ### **Backend**
 - Node.js with Express.js
 - MongoDB for database storage
-- Firebase for authentication and push notifications
 
 ### **APIs & Integrations**
 - **Razorpay** for payments

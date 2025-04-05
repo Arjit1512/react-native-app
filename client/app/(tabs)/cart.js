@@ -343,7 +343,7 @@ const Cart = () => {
               <View key={item._id} style={styles.flexcol}>
                 <View style={styles.flexrowdiv}>
 
-                  <Image source={{ uri: `https://sociopedia-bucket.s3.us-east-1.amazonaws.com${item.imagePath}` }} style={styles.proimg} />
+                  <Image source={{ uri: `https://myawsbuckets3arjit.s3.ap-south-1.amazonaws.com${item.imagePath}` }} style={styles.proimg} />
                   <View style={styles.inside}>
                     <Text style={styles.small}>{item.product_name}</Text>
                     <Text style={styles.grey}>OVERSIZED T-SHIRT</Text>

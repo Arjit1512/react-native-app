@@ -79,7 +79,7 @@ const Home = () => {
           </View>
 
           <View style={{ marginTop: 20 }}>
-            <Image source={require("../../assets/sources/hof.jpg")} style={{ width: "100%", height: 300 }} />
+            <Image source={require("../../assets/sources/hof.jpg")} style={styles.hofimg} />
             {/* <Text style={[styles.typewriter,{backgroundColor:"black",color:"white",position:"relative",bottom:"45%",left:"25%",lineHeight:20,fontSize:14,textAlign:"center"}]}>
             Currently we dont have a content to paste here!
           </Text> */}
@@ -147,6 +147,13 @@ const styles = StyleSheet.create({
     width: "50%",
     marginTop: 25
   },
+  hofimg:{
+    width: "90%",
+    height: 400,
+    borderRadius:12,
+    alignSelf:"center",
+    opacity:1
+  }
 });
 
 export default Home;

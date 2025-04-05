@@ -1,5 +1,4 @@
 import { View, Text, Button, Image, StyleSheet, TouchableOpacity, Dimensions, Platform } from "react-native";
-
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { ScrollView } from "react-native";
 import { Icon } from "react-native-elements";
@@ -79,6 +78,7 @@ const ProductDetail = () => {
       <Loader visible={loading} />
     )
   }
+
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -162,7 +162,7 @@ const ProductDetail = () => {
               </TouchableOpacity>
             </View>
 
-            <TouchableOpacity style={styles.addToCartBtn} onPress={() => handleAddCart(product.id, selectedSize)}>
+            <TouchableOpacity style={styles.addToCartBtn} onPress={() => {console.log("Product clicked:", product);handleAddCart(product.id, selectedSize)}}>
               <Text style={styles.addToCartText}>ADD TO CART</Text>
             </TouchableOpacity>
 

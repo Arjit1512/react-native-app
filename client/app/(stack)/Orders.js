@@ -78,6 +78,9 @@ const Orders = () => {
           <View style={styles.navbar}>
             <Text style={styles.navbarText}>THANK YOU <Text style={styles.blink}>{userName}</Text> FOR BEING PART OF OUR HOOD.</Text>
           </View>
+          <TouchableOpacity style={styles.btn} onPress={() => router.back()}>
+            <Icon name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
           <View style={styles.orderdiv}>
             {orders?.map((order) => {
               return (
@@ -90,7 +93,7 @@ const Orders = () => {
                     return (
                       <View style={styles.eachorderdiv} key={item._id}>
                         <View style={styles.rowdiv}>
-                          <Image source={{ uri: `https://sociopedia-bucket.s3.us-east-1.amazonaws.com${item.productImagePath}` }} style={styles.proimg} />
+                          <Image source={{ uri: `https://myawsbuckets3arjit.s3.ap-south-1.amazonaws.com${item.productImagePath}` }} style={styles.proimg} />
                           <View style={styles.coldiv}>
                             <Text style={styles.itemdiv}>Name: {item.productName}</Text>
                             <Text style={styles.pq}>Quantity: {item.productQuantity} <Text style={{ fontWeight: "700" }}>(Size: {item.productSize})</Text></Text>
@@ -108,9 +111,7 @@ const Orders = () => {
             <Text style={styles.white}>While we deliver your product, please take a look at our brand new collections!</Text>
           </View>
 
-          <TouchableOpacity style={styles.btn} onPress={() => router.back()}>
-            <Icon name="arrow-back" size={24} color="white" />
-          </TouchableOpacity>
+          
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -162,7 +163,7 @@ const styles = StyleSheet.create({
   orderdiv: {
     padding: 10,
     width: "100%",
-    marginTop: 30
+    marginTop:-10
   },
   eachorderdiv: {
     marginTop: 25
@@ -222,9 +223,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   btn: {
-    position: "absolute",
-    bottom: Platform.OS === 'ios' ? '76.5%' : '84%',
-    right: "86%",
+    position: "relative",
+    top:10,
+    left:5,
     backgroundColor: "black",
     zIndex: 100,
     padding: 6,

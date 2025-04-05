@@ -1,20 +1,20 @@
 const products = [
-    {
-        id: 1,
-        imgURL: `/images/i1.jpg`,
-        price: 1.00,
-        name: "Vengeance of the Hood",
-        description: "I'm a product",
-        category: "T-Shirts"
-    },
-    {
-        id: 3,
-        imgURL: `/images/i3.jpg`,
-        price:2.00,
-        name: "True Hood Original",
-        description: "I'm a product",
-        category: "T-Shirts"
-    },
+    // {
+    //     id: 1,
+    //     imgURL: `/images/i1.jpg`,
+    //     price: 1.00,
+    //     name: "Vengeance of the Hood",
+    //     description: "I'm a product",
+    //     category: "T-Shirts"
+    // },
+    // {
+    //     id: 3,
+    //     imgURL: `/images/i3.jpg`,
+    //     price:2.00,
+    //     name: "True Hood Original",
+    //     description: "I'm a product",
+    //     category: "T-Shirts"
+    // },
     // {
     //     id: 5,
     //     imgURL: `/images/i5.jpg`,
@@ -23,14 +23,14 @@ const products = [
     //     description: "I'm a product",
     //     category: "T-Shirts"
     // },
-    {
-        id: 7,
-        imgURL: `/images/i7.png`,
-        price:3.00,
-        name: "The Black Panther Tee",
-        description: "I'm a product",
-        category: "T-Shirts"
-    },
+    // {
+    //     id: 7,
+    //     imgURL: `/images/i7.png`,
+    //     price:3.00,
+    //     name: "The Black Panther Tee",
+    //     description: "I'm a product",
+    //     category: "T-Shirts"
+    // },
     // {
     //     id: 15,
     //     imgURL: `/images/i15.png`,
@@ -50,7 +50,7 @@ const products = [
     {
         id: 13,
         imgURL: `/images/i13.png`,
-        price: 4.00,
+        price: 699.00,
         name: "Hood Over Fear",
         description: "I'm a product",
         category: "T-Shirts"

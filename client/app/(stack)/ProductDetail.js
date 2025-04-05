@@ -162,7 +162,7 @@ const ProductDetail = () => {
               </TouchableOpacity>
             </View>
 
-            <TouchableOpacity style={styles.addToCartBtn} onPress={() => {console.log("Product clicked:", product);handleAddCart(product.id, selectedSize)}}>
+            <TouchableOpacity style={styles.addToCartBtn} onPress={() => {handleAddCart(product.id, selectedSize)}}>
               <Text style={styles.addToCartText}>ADD TO CART</Text>
             </TouchableOpacity>
 
